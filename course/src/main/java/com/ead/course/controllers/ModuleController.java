@@ -4,15 +4,21 @@ import com.ead.course.dtos.ModuleDTO;
 import com.ead.course.models.Module;
 import com.ead.course.services.CourseService;
 import com.ead.course.services.ModuleService;
+import com.ead.course.specs.ModuleFilter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
+
+import static com.ead.course.specs.ModuleSpecificationBuilder.toSpec;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,8 +55,12 @@ public class ModuleController {
     }
 
     @GetMapping("/courses/{courseId}/modules")
-    public ResponseEntity<List<Module>> getAllModules(@PathVariable final UUID courseId) {
-        return ResponseEntity.ok(moduleService.findAllModulesByCourseId(courseId));
+    public ResponseEntity<Page<Module>> getAllModules(@PathVariable final UUID courseId,
+                                                      @RequestParam(required = false) final String title,
+                                                      @PageableDefault(page = 0, size = 10, sort = "moduleId",
+                                                              direction = Sort.Direction.ASC) final Pageable pageable) {
+        final var moduleFilter = ModuleFilter.createFilter(title, courseId);
+        return ResponseEntity.ok(moduleService.findAllModulesByCourseId(toSpec(moduleFilter), pageable));
     }
 
     @GetMapping("/courses/{courseId}/modules/{moduleId}")

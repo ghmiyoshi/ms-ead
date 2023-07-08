@@ -1,8 +1,10 @@
 package com.ead.course.services;
 
 import com.ead.course.models.Module;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface ModuleService {
@@ -13,7 +15,7 @@ public interface ModuleService {
 
     Module findByModuleIdAndCourseId(final UUID moduleId, final UUID courseId);
 
-    List<Module> findAllModulesByCourseId(final UUID courseId);
+    Page<Module> findAllModulesByCourseId(final Specification<Module> spec, final Pageable pageable);
 
     Module findModuleById(final UUID moduleId);
 
