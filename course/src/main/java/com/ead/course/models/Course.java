@@ -3,7 +3,6 @@ package com.ead.course.models;
 import com.ead.course.enums.CourseLevel;
 import com.ead.course.enums.CourseStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -12,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -53,5 +53,11 @@ public class Course {
 
     @Column(nullable = false)
     private UUID userInstructor;
+
+    /* Essa anotacao diz para ignorar esse campo e ocultar em consultas findAll, findById */
+    // @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    // @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "course")
+    private Set<Module> modules;
 
 }

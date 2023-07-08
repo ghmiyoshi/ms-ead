@@ -1,6 +1,7 @@
 package com.ead.course.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -37,5 +39,17 @@ public class Module {
     @UpdateTimestamp
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime lastUpdateDate;
+
+    /* Essa anotacao diz para ignorar esse campo e ocultar em consultas findAll, findById */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    /* Quando coloco optional o hibernate usa join nas querys */
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "course_id")
+    private Course course;
+
+    /* Essa anotacao diz para ignorar esse campo e ocultar em consultas findAll, findById */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToMany(mappedBy = "module")
+    private Set<Lesson> lessons;
 
 }
