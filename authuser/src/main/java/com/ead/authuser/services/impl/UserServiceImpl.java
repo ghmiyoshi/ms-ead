@@ -5,6 +5,7 @@ import com.ead.authuser.models.User;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -26,11 +28,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(final UUID userId) {
-        var user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            return user.get();
-        }
-        throw new RuntimeException("User not found");
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override
@@ -47,6 +46,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void validateUser(UserRequestDTO userRequest) {
         if (userRepository.existsUserByUsernameOrEmail(userRequest.username(), userRequest.email())) {
+            log.error("{}::validateUser - User is already taken", getClass().getSimpleName());
             throw new RuntimeException("User is already taken");
         }
     }

@@ -1,5 +1,6 @@
 package com.ead.authuser.dtos;
 
+import com.ead.authuser.utils.ObjectMapperUtils;
 import com.ead.authuser.validation.UsernameConstraint;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.constraints.Email;
@@ -44,13 +45,18 @@ public record UserRequestDTO(
         String imageUrl) {
 
     public interface Request {
-        static interface RegistrationPost {}
+        interface RegistrationPost {}
 
-        static interface UserPut {}
+        interface UserPut {}
 
-        static interface PasswordPut {}
+        interface PasswordPut {}
 
-        static interface ImagePut {}
+        interface ImagePut {}
+    }
+
+    @Override
+    public String toString() {
+        return ObjectMapperUtils.writeObjectInJson(this);
     }
 
 }

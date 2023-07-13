@@ -20,7 +20,7 @@ import java.util.UUID;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "tb_users")
-public class User {
+public class User extends JsonAbstract {
 
     @EqualsAndHashCode.Include
     @Id
@@ -76,12 +76,12 @@ public class User {
         return user;
     }
 
-    public void updateUser(UserRequestDTO userRequest) {
+    public void updateUser(final UserRequestDTO userRequest) {
         this.setFullName(userRequest.fullName());
         this.setPhoneNumber(userRequest.phoneNumber());
     }
 
-    public void updatePassword(UserRequestDTO userRequest) {
+    public void updatePassword(final UserRequestDTO userRequest) {
         if (this.password.equals(userRequest.oldPassword())) {
             this.setPassword(userRequest.password());
         } else {
@@ -89,7 +89,7 @@ public class User {
         }
     }
 
-    public void updateImageUrl(String imageUrl) {
+    public void updateImageUrl(final String imageUrl) {
         this.setImageUrl(imageUrl);
     }
 

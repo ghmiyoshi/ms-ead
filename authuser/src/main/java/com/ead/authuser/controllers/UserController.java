@@ -9,6 +9,7 @@ import com.ead.authuser.services.UserService;
 import com.ead.authuser.specs.UserFilter;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static com.ead.authuser.specs.UserSpecificationBuilder.toSpec;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -48,7 +50,9 @@ public class UserController {
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable final UUID userId) {
+        log.info("{}::deleteUser - user id received: {}", getClass().getSimpleName(), userId);
         userService.deleteById(userId);
+        log.info("{}::deleteUser - deleted user id {}", getClass().getSimpleName(), userId);
     }
 
     @PutMapping("/{userId}")
@@ -56,9 +60,12 @@ public class UserController {
     public UserResponseDTO updateUser(@PathVariable final UUID userId,
                                       @RequestBody @Validated(UserRequestDTO.Request.UserPut.class)
                                       @JsonView(UserRequestDTO.Request.UserPut.class) final UserRequestDTO userRequest) {
+        log.info("{}::updateUser - received: {}", getClass().getSimpleName(), userRequest);
         var user = userService.findById(userId);
         user.updateUser(userRequest);
-        return UserResponseDTO.from(userService.save(user));
+        user = userService.save(user);
+        log.info("{}::updateUser - saved: {}", getClass().getSimpleName(), user);
+        return UserResponseDTO.from(user);
     }
 
     @PutMapping("/{userId}/password")

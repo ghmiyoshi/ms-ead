@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:13306/ead-authuser?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/ead-authuser?useSSL=false&serverTimezone=UTC
     username: root
     password: root
   jpa:
@@ -17,3 +17,7 @@ spring:
     property-naming-strategy: SNAKE_CASE
     deserialization:
       fail-on-unknown-properties: true
+
+logging:
+  level:
+    com.ead.authuser: debug
