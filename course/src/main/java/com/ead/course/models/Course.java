@@ -2,6 +2,7 @@ package com.ead.course.models;
 
 import com.ead.course.enums.CourseLevel;
 import com.ead.course.enums.CourseStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -46,5 +47,9 @@ public class Course extends DefaultModel {
     // @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "course")
     private Set<Module> modules;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToMany(mappedBy = "course")
+    private Set<CourseUser> coursesUsers;
 
 }

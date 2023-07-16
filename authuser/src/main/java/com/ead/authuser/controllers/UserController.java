@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.ead.authuser.specs.UserSpecificationBuilder.toSpec;
 
@@ -37,7 +36,8 @@ public class UserController {
     @GetMapping
     @JsonView(UserResponseDTO.Response.UserGet.class)
     public Page<UserResponseDTO> getAllUsers(@PageableDefault(page = 0, size = 10, sort = "userId",
-            direction = Sort.Direction.ASC) final Pageable pageable) {
+            direction = Sort.Direction.ASC) final Pageable pageable,
+                                             @RequestParam(required = false) final UUID courseId) {
         return userService.findAll(pageable).map(UserResponseDTO::from);
     }
 
@@ -95,7 +95,7 @@ public class UserController {
                                               @RequestParam(required = false) final String email) {
         final var userFilter = UserFilter.createFilter(userType, userStatus, email);
         return userRepository.findAll(toSpec(userFilter))
-                .stream().map(UserResponseDTO::from).collect(Collectors.toList());
+                .stream().map(UserResponseDTO::from).toList();
     }
 
 }
