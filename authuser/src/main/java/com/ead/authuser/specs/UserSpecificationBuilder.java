@@ -3,10 +3,15 @@ package com.ead.authuser.specs;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.User;
+import com.ead.authuser.models.UserCourse;
+import com.ead.authuser.models.UserCourse_;
 import com.ead.authuser.models.User_;
+import jakarta.persistence.criteria.Join;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+
+import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 
@@ -18,15 +23,19 @@ public class UserSpecificationBuilder {
                 Specification.where((root, query, criteriaBuilder) -> criteriaBuilder.conjunction());
 
         if (nonNull(userFilter.userType())) {
-            specification = byUserType(userFilter.userType()).and(specification);
+            specification = specification.and(byUserType(userFilter.userType()));
         }
 
         if (nonNull(userFilter.userStatus())) {
-            specification = byUserStatus(userFilter.userStatus()).and(specification);
+            specification = specification.and(byUserStatus(userFilter.userStatus()));
         }
 
         if (nonNull(userFilter.email())) {
-            specification = byEmail(userFilter.email()).and(specification);
+            specification = specification.and(byEmail(userFilter.email()));
+        }
+
+        if (nonNull(userFilter.courseId())) {
+            specification = specification.and(byUserCourseId(userFilter.courseId()));
         }
 
         return specification;
@@ -42,6 +51,13 @@ public class UserSpecificationBuilder {
 
     private static Specification<User> byEmail(final String email) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get(User_.EMAIL), "%" + email + "%");
+    }
+
+    private static Specification<User> byUserCourseId(final UUID courseId) {
+        return (root, query, criteriaBuilder) -> {
+            Join<User, UserCourse> usersCourses = root.join(User_.USERS_COURSES);
+            return criteriaBuilder.equal(usersCourses.get(UserCourse_.COURSE_ID), courseId);
+        };
     }
 
 }

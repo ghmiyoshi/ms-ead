@@ -54,9 +54,10 @@ public class CourseController {
     public ResponseEntity<Page<Course>> getAllCourses(@RequestParam(required = false) final CourseLevel courseLevel,
                                                       @RequestParam(required = false) final CourseStatus courseStatus,
                                                       @RequestParam(required = false) final String name,
+                                                      @RequestParam(required = false) final UUID userId,
                                                       @PageableDefault(page = 0, size = 10, sort = "courseId",
                                                               direction = Sort.Direction.ASC) final Pageable pageable) {
-        final var courseFilter = CourseFilter.createFilter(courseLevel, courseStatus, name);
+        final var courseFilter = CourseFilter.createFilter(courseLevel, courseStatus, name, userId);
         return ResponseEntity.ok(courseService.findAllCourses(toSpec(courseFilter), pageable));
     }
 

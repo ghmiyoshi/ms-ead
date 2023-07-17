@@ -4,12 +4,16 @@ import com.ead.course.enums.CourseLevel;
 import com.ead.course.enums.CourseStatus;
 import lombok.Builder;
 
-@Builder
-public record CourseFilter(CourseLevel courseLevel, CourseStatus courseStatus, String name) {
+import java.util.UUID;
 
-    public static CourseFilter createFilter(final CourseLevel courseLevel, final CourseStatus courseStatus,
-                                            final String name) {
-        return CourseFilter.builder().courseLevel(courseLevel).courseStatus(courseStatus).name(name).build();
+@Builder
+public record CourseFilter(CourseLevel courseLevel, CourseStatus courseStatus, String name, UUID userId) {
+
+    public static CourseFilter createFilter(final CourseLevel courseLevel,
+                                            final CourseStatus courseStatus,
+                                            final String name,
+                                            final UUID userId) {
+        return CourseFilter.builder().courseLevel(courseLevel).courseStatus(courseStatus).name(name).userId(userId).build();
     }
 
 }

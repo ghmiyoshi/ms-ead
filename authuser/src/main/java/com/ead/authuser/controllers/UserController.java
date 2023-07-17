@@ -92,8 +92,9 @@ public class UserController {
     @JsonView(UserResponseDTO.Response.UserGet.class)
     public List<UserResponseDTO> getUserSpecs(@RequestParam(required = false) final UserType userType,
                                               @RequestParam(required = false) final UserStatus userStatus,
-                                              @RequestParam(required = false) final String email) {
-        final var userFilter = UserFilter.createFilter(userType, userStatus, email);
+                                              @RequestParam(required = false) final String email,
+                                              @RequestParam(required = false) final UUID courseId) {
+        final var userFilter = UserFilter.createFilter(userType, userStatus, email, courseId);
         return userRepository.findAll(toSpec(userFilter))
                 .stream().map(UserResponseDTO::from).toList();
     }
