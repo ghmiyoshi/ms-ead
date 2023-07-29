@@ -1,6 +1,6 @@
 package com.ead.authuser.controllers;
 
-import com.ead.authuser.clients.UserClient;
+import com.ead.authuser.clients.CourseClient;
 import com.ead.authuser.dtos.CourseDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +22,11 @@ import java.util.UUID;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class UserCourseController {
 
-    private UserClient userClient;
+    private CourseClient courseClient;
 
     @GetMapping("/users/{userId}/courses")
     public ResponseEntity<Page<CourseDTO>> getAllCoursesByUser(@PageableDefault(page = 0, size = 10, sort = "courseId",
             direction = Sort.Direction.ASC) final Pageable pageable, @PathVariable final UUID userId) {
-        return ResponseEntity.ok(userClient.getAllCoursesByUser(pageable, userId));
+        return ResponseEntity.ok(courseClient.getAllCoursesByUser(pageable, userId));
     }
 }

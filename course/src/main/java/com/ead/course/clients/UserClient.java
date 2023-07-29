@@ -1,8 +1,8 @@
-package com.ead.authuser.clients;
+package com.ead.course.clients;
 
-import com.ead.authuser.dtos.CourseDTO;
-import com.ead.authuser.dtos.ResponsePageDTO;
-import com.ead.authuser.services.UtilsService;
+import com.ead.course.dtos.ResponsePageDTO;
+import com.ead.course.dtos.UserDTO;
+import com.ead.course.services.UtilsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -22,11 +22,10 @@ public class UserClient {
     private final UtilsService utilsService;
     private final RestTemplate restTemplate;
 
-    public Page<CourseDTO> getAllCoursesByUser(final Pageable pageable, final UUID userId) {
-        log.info("{}::getAllCoursesByUser - user id received: {}", getClass().getSimpleName(), userId);
-        final var url = utilsService.createUrl(userId, pageable);
-        log.debug("{}::getAllCoursesByUser - Request URL: {} ", getClass().getSimpleName(), url);
-        ParameterizedTypeReference<ResponsePageDTO<CourseDTO>> responseType = new ParameterizedTypeReference<>() {};
+    public Page<UserDTO> getAllUsersByCourse(UUID courseId, Pageable pageable) {
+        final var url = utilsService.createUrl(courseId, pageable);
+        log.info("Request URL: {} ", url);
+        ParameterizedTypeReference<ResponsePageDTO<UserDTO>> responseType = new ParameterizedTypeReference<>() {};
         return restTemplate.exchange(url, HttpMethod.GET, null, responseType).getBody();
     }
 
