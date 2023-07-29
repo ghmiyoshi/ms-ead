@@ -31,14 +31,15 @@ import static com.ead.authuser.specs.UserSpecificationBuilder.toSpec;
 public class UserController {
 
     private UserService userService;
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
 
     @GetMapping
     @JsonView(UserResponseDTO.Response.UserGet.class)
     public Page<UserResponseDTO> getAllUsers(@PageableDefault(page = 0, size = 10, sort = "userId",
             direction = Sort.Direction.ASC) final Pageable pageable,
                                              @RequestParam(required = false) final UUID courseId) {
-        return userService.findAll(pageable).map(UserResponseDTO::from);
+        final var userFilter = UserFilter.createFilter(null, null, null, courseId);
+        return userRepository.findAll(toSpec(userFilter), pageable).map(UserResponseDTO::from);
     }
 
     @GetMapping("/{userId}")

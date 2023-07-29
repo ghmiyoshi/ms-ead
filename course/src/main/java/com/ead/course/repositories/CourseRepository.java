@@ -16,7 +16,7 @@ public interface CourseRepository extends JpaRepository<Course, UUID>, JpaSpecif
     @EntityGraph(attributePaths = "modules")
     Optional<Course> findByCourseId(final UUID courseId);
 
-    @EntityGraph(attributePaths = "modules")
+    //@EntityGraph(attributePaths = "modules")
     Page<Course> findAll(final Specification<Course> specification, final Pageable pageable);
 
 }

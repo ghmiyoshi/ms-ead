@@ -43,7 +43,7 @@ public class Course extends DefaultModel {
     private UUID userInstructor;
 
     /* Essa anotacao diz para ignorar esse campo e ocultar em consultas findAll, findById */
-    // @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     // @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "course")
     private Set<Module> modules;
