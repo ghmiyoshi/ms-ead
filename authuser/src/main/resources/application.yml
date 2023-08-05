@@ -21,3 +21,8 @@ spring:
 logging:
   level:
     com.ead.authuser: debug
+
+ead:
+  api:
+    url:
+      course: 'http://localhost:8082'

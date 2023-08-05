@@ -3,13 +3,13 @@ package com.ead.authuser.models;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Getter
-@Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor
 @Entity
 @Table(name = "tb_users_courses")
 public class UserCourse extends JsonAbstract {
@@ -25,5 +25,10 @@ public class UserCourse extends JsonAbstract {
 
     @Column(nullable = false)
     private UUID courseId;
+
+    public UserCourse(final User user, final UUID courseId) {
+        this.user = user;
+        this.courseId = courseId;
+    }
 
 }

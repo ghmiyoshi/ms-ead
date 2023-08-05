@@ -17,3 +17,8 @@ spring:
     property-naming-strategy: SNAKE_CASE
     deserialization:
       fail-on-unknown-properties: true
+
+ead:
+  api:
+    course:
+      url: http://localhost:8087
