@@ -15,8 +15,18 @@ public interface UserService {
 
     void deleteById(final UUID userId);
 
-    User save(User user);
+    User save(final User user);
 
-    void validateUser(UserRequestDTO userRequest);
+    void validateUser(final UserRequestDTO userRequest);
+
+    User newStudent();
+
+    void subscriptionInstructor(final User user);
+
+    void updateFullNameAndPhoneNumber(final User user, final UserRequestDTO userRequest);
+
+    void updatePassword(final User user, final UserRequestDTO userRequest);
+
+    void updateImageUrl(final User user, final String imageUrl);
 
 }

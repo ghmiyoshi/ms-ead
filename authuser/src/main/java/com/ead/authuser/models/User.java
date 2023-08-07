@@ -1,6 +1,5 @@
 package com.ead.authuser.models;
 
-import com.ead.authuser.dtos.UserRequestDTO;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -61,29 +60,6 @@ public class User extends JsonAbstract {
 
     public User() {
         this.userStatus = UserStatus.ACTIVE;
-    }
-
-    public static User newStudent() {
-        var user = new User();
-        user.userType = UserType.STUDENT;
-        return user;
-    }
-
-    public void updateUser(final UserRequestDTO userRequest) {
-        this.setFullName(userRequest.fullName());
-        this.setPhoneNumber(userRequest.phoneNumber());
-    }
-
-    public void updatePassword(final UserRequestDTO userRequest) {
-        if (this.password.equals(userRequest.oldPassword())) {
-            this.setPassword(userRequest.password());
-        } else {
-            throw new IllegalArgumentException("Mismatched old password");
-        }
-    }
-
-    public void updateImageUrl(final String imageUrl) {
-        this.setImageUrl(imageUrl);
     }
 
 }

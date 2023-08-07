@@ -1,6 +1,7 @@
 package com.ead.authuser.services.impl;
 
 import com.ead.authuser.dtos.UserRequestDTO;
+import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.User;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
@@ -22,7 +23,7 @@ public class UserServiceImpl implements UserService {
 
     @Cacheable
     @Override
-    public Page<User> findAll(Pageable pageable) {
+    public Page<User> findAll(final Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
@@ -39,16 +40,45 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User save(User user) {
+    public User save(final User user) {
         return userRepository.save(user);
     }
 
     @Override
-    public void validateUser(UserRequestDTO userRequest) {
+    public void validateUser(final UserRequestDTO userRequest) {
         if (userRepository.existsUserByUsernameOrEmail(userRequest.username(), userRequest.email())) {
             log.error("{}::validateUser - User is already taken", getClass().getSimpleName());
             throw new RuntimeException("User is already taken");
         }
+    }
+
+    @Override
+    public User newStudent() {
+        var user = new User();
+        user.setUserType(UserType.STUDENT);
+        return user;
+    }
+
+    @Override
+    public void subscriptionInstructor(final User user) {
+        user.setUserType(UserType.INSTRUCTOR);
+    }
+
+    @Override
+    public void updateFullNameAndPhoneNumber(final User user, final UserRequestDTO userRequest) {
+        user.setFullName(userRequest.fullName());
+        user.setPhoneNumber(userRequest.phoneNumber());
+    }
+
+    @Override
+    public void updatePassword(final User user, final UserRequestDTO userRequest) {
+        user.setPassword(userRequest.password());
+        System.out.println("Pedido concluído");
+    }
+
+    @Override
+    public void updateImageUrl(final User user, final String imageUrl) {
+        user.setImageUrl(imageUrl);
     }
 
 }

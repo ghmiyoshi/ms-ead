@@ -63,7 +63,7 @@ public class UserController {
                                       @JsonView(UserRequestDTO.Request.UserPut.class) final UserRequestDTO userRequest) {
         log.info("{}::updateUser - received: {}", getClass().getSimpleName(), userRequest);
         var user = userService.findById(userId);
-        user.updateUser(userRequest);
+        userService.updateFullNameAndPhoneNumber(user, userRequest);
         user = userService.save(user);
         log.info("{}::updateUser - saved: {}", getClass().getSimpleName(), user);
         return UserResponseDTO.from(user);
@@ -74,7 +74,7 @@ public class UserController {
                                  @RequestBody @Validated(UserRequestDTO.Request.PasswordPut.class)
                                  @JsonView(UserRequestDTO.Request.PasswordPut.class) final UserRequestDTO userRequest) {
         var user = userService.findById(userId);
-        user.updatePassword(userRequest);
+        userService.updatePassword(user, userRequest);
         userService.save(user);
         return "Password updated successfully";
     }
@@ -84,7 +84,7 @@ public class UserController {
                               @RequestBody @Validated(UserRequestDTO.Request.ImagePut.class)
                               @JsonView(UserRequestDTO.Request.ImagePut.class) final UserRequestDTO userRequest) {
         var user = userService.findById(userId);
-        user.updateImageUrl(userRequest.imageUrl());
+        userService.updateImageUrl(user, userRequest.imageUrl());
         userService.save(user);
         return "Image url updated successfully";
     }
