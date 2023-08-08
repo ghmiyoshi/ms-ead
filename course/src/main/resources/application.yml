@@ -17,6 +17,9 @@ spring:
     property-naming-strategy: SNAKE_CASE
     deserialization:
       fail-on-unknown-properties: true
+#  mvc:
+#    problemdetails:
+#      enabled: true
 
 ead:
   api:

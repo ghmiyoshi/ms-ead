@@ -6,8 +6,10 @@ import com.ead.course.enums.CourseStatus;
 import com.ead.course.models.Course;
 import com.ead.course.services.CourseService;
 import com.ead.course.specs.CourseFilter;
+import com.ead.course.validation.CourseValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,12 +17,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 import static com.ead.course.specs.CourseSpecificationBuilder.toSpec;
 
+@Slf4j
 @RestController
 @RequestMapping("/courses")
 @RequiredArgsConstructor
@@ -28,9 +32,12 @@ import static com.ead.course.specs.CourseSpecificationBuilder.toSpec;
 public class CourseController {
 
     private final CourseService courseService;
+    private final CourseValidator courseValidator;
 
     @PostMapping
-    public ResponseEntity<Course> saveCourse(@RequestBody @Valid final CourseDTO courseDto) {
+    public ResponseEntity<Object> saveCourse(@RequestBody final CourseDTO courseDto, final Errors errors) {
+        log.info("{}::saveCourse - received: {}", getClass().getSimpleName(), courseDto);
+        courseValidator.validate(courseDto, errors);
         var course = new Course();
         BeanUtils.copyProperties(courseDto, course);
         return ResponseEntity.status(HttpStatus.CREATED).body(courseService.saveCourse(course));

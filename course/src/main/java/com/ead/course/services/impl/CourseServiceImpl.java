@@ -5,16 +5,20 @@ import com.ead.course.repositories.CourseRepository;
 import com.ead.course.services.CourseService;
 import com.ead.course.services.ModuleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CourseServiceImpl implements CourseService {
@@ -34,12 +38,14 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course saveCourse(final Course course) {
+        log.info("{}::saveCourse - Saving course: {}", getClass().getSimpleName(), course);
         return courseRepository.save(course);
     }
 
     @Override
     public Course findCourseById(final UUID courseId) {
-        return courseRepository.findByCourseId(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
+        return courseRepository.findByCourseId(courseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                                                                       "Course not found"));
     }
 
     @Override

@@ -10,8 +10,10 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -39,10 +41,10 @@ public class UserClient {
         if (ACTIVE.equals(user.userStatus())) {
             return user;
         }
-        throw new RuntimeException("User is not active");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not active");
     }
 
-    private UserDTO getUserById(final UUID userId) {
+    public UserDTO getUserById(final UUID userId) {
         final var url = utilsService.createUrlGetUser(userId);
         log.info(REQUEST_URL, url);
         var user = restTemplate.exchange(url, HttpMethod.GET, null, UserDTO.class).getBody();
