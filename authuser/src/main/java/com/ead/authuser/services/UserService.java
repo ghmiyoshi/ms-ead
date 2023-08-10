@@ -9,24 +9,24 @@ import java.util.UUID;
 
 public interface UserService {
 
-    Page<User> findAll(final Pageable pageable);
+    Page<User> findAll(Pageable pageable);
 
-    User findById(final UUID userId);
+    User findById(UUID userId);
 
-    void deleteById(final UUID userId);
+    void deleteById(UUID userId);
 
-    User save(final User user);
+    User save(User user);
 
-    void validateUser(final UserRequestDTO userRequest);
+    void validateUser(UserRequestDTO userRequest);
 
     User newStudent();
 
-    void subscriptionInstructor(final User user);
+    void subscriptionInstructor(User user);
 
-    void updateFullNameAndPhoneNumber(final User user, final UserRequestDTO userRequest);
+    void updateFullNameAndPhoneNumber(User user, UserRequestDTO userRequest);
 
-    void updatePassword(final User user, final UserRequestDTO userRequest);
+    void updatePassword(User user, UserRequestDTO userRequest);
 
-    void updateImageUrl(final User user, final String imageUrl);
+    void updateImageUrl(User user, String imageUrl);
 
 }

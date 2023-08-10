@@ -1,7 +1,9 @@
 package com.ead.course.services.impl;
 
 import com.ead.course.models.Course;
+import com.ead.course.models.CourseUser;
 import com.ead.course.repositories.CourseRepository;
+import com.ead.course.repositories.CourseUserRepository;
 import com.ead.course.services.CourseService;
 import com.ead.course.services.ModuleService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.UUID;
 
 import static java.util.Objects.nonNull;
@@ -24,6 +27,7 @@ import static java.util.Objects.nonNull;
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
+    private final CourseUserRepository courseUserRepository;
     private final ModuleService moduleService;
 
     @Transactional
@@ -32,6 +36,11 @@ public class CourseServiceImpl implements CourseService {
         var course = findCourseById(courseId);
         if (nonNull(course.getModules()) || !course.getModules().isEmpty()) {
             course.getModules().stream().forEach(moduleService::deleteModule);
+        }
+
+        List<CourseUser> allCourseUser = courseUserRepository.findAllCourseUserIntoCourse(courseId);
+        if (nonNull(allCourseUser) && !allCourseUser.isEmpty()) {
+            courseUserRepository.deleteAll(allCourseUser);
         }
         courseRepository.delete(course);
     }

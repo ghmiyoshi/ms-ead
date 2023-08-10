@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface CourseService {
 
-    void deleteCourse(final UUID uuid);
+    void deleteCourse(UUID uuid);
 
     Course saveCourse(Course course);
 

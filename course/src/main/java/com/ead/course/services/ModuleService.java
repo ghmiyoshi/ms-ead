@@ -9,14 +9,14 @@ import java.util.UUID;
 
 public interface ModuleService {
 
-    void deleteModule(final Module module);
+    void deleteModule(Module module);
 
-    Module saveModule(final Module module);
+    Module saveModule(Module module);
 
-    Module findByModuleIdAndCourseId(final UUID moduleId, final UUID courseId);
+    Module findByModuleIdAndCourseId(UUID moduleId, UUID courseId);
 
-    Page<Module> findAllModulesByCourseId(final Specification<Module> spec, final Pageable pageable);
+    Page<Module> findAllModulesByCourseId(Specification<Module> spec, Pageable pageable);
 
-    Module findModuleById(final UUID moduleId);
+    Module findModuleById(UUID moduleId);
 
 }

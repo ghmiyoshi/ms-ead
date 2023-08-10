@@ -3,6 +3,8 @@ package com.ead.authuser.services.impl;
 import com.ead.authuser.dtos.UserRequestDTO;
 import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.User;
+import com.ead.authuser.models.UserCourse;
+import com.ead.authuser.repositories.UserCourseRepository;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
 import lombok.AllArgsConstructor;
@@ -10,9 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.UUID;
+
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -20,6 +27,7 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
+    private UserCourseRepository userCourseRepository;
 
     @Cacheable
     @Override
@@ -30,12 +38,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(final UUID userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
     @Override
     public void deleteById(final UUID userId) {
         var user = this.findById(userId);
+        List<UserCourse> userCourses = userCourseRepository.findAllByUserUserId(userId);
+        if (nonNull(userCourses) && !userCourses.isEmpty()) {
+            userCourseRepository.deleteAll(userCourses);
+        }
         userRepository.delete(user);
     }
 
