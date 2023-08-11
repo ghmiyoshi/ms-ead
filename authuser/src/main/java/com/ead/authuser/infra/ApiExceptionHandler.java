@@ -8,12 +8,15 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Objects.nonNull;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -25,15 +28,18 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(ValidationException.class)
     public ProblemDetail handleValidationException(final ValidationException exception) {
-        List<ObjectError> allErrors = exception.getErrors();
-        List<Map<String, String>> apiErrorFields = allErrors.stream()
-                .map(fieldError -> {
+        List<Map<String, String>> apiErrorFields = mapErrorsToApiFields(exception.getErrors());
+        return buildProblemDetailWithFieldErrors(exception, apiErrorFields);
+    }
+
+    private List<Map<String, String>> mapErrorsToApiFields(final List<ObjectError> errors) {
+        return errors.stream()
+                .map(error -> {
                     Map<String, String> errorField = new HashMap<>();
-                    errorField.put("field", ((FieldError) fieldError).getField());
-                    errorField.put("message", fieldError.getDefaultMessage());
+                    errorField.put("field", ((FieldError) error).getField());
+                    errorField.put("message", error.getDefaultMessage());
                     return errorField;
                 }).toList();
-        return buildProblemDetailWithFieldErrors(exception, apiErrorFields);
     }
 
     private ProblemDetail buildProblemDetail(final ResponseStatusException exception) {
@@ -47,7 +53,9 @@ public class ApiExceptionHandler {
                                                             final List<Map<String, String>> errorFields) {
         var problemDetail = buildProblemDetail(new ResponseStatusException(HttpStatus.BAD_REQUEST,
                                                                            exception.getMessage()));
-        problemDetail.setProperty("errors", errorFields);
+        if (nonNull(errorFields)) {
+            problemDetail.setProperty("errors", errorFields);
+        }
         return problemDetail;
     }
 
@@ -62,26 +70,13 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
-        List<FieldError> fieldErrors = exception.getFieldErrors();
-        if (fieldErrors.isEmpty()) {
-            List<ObjectError> allErrors = exception.getAllErrors();
-            List<Map<String, String>> apiErrorFields = allErrors.stream()
-                    .map(fieldError -> {
-                        Map<String, String> errorField = new HashMap<>();
-                        errorField.put("message", fieldError.getDefaultMessage());
-                        return errorField;
-                    }).toList();
-            return buildProblemDetailWithFieldErrors(exception, apiErrorFields);
-        }
-
-        List<Map<String, String>> apiErrorFields = fieldErrors.stream()
-                .map(fieldError -> {
-                    Map<String, String> errorField = new HashMap<>();
-                    errorField.put("field", fieldError.getField());
-                    errorField.put("message", fieldError.getDefaultMessage());
-                    return errorField;
-                }).toList();
+        List<Map<String, String>> apiErrorFields = mapErrorsToApiFields(exception.getAllErrors());
         return buildProblemDetailWithFieldErrors(exception, apiErrorFields);
+    }
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    public ProblemDetail handleHttpClientErrorException(final HttpClientErrorException exception) {
+        return exception.getResponseBodyAs(ProblemDetail.class);
     }
 
 }

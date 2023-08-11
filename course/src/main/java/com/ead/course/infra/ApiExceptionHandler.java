@@ -32,7 +32,7 @@ public class ApiExceptionHandler {
         return buildProblemDetailWithFieldErrors(exception, apiErrorFields);
     }
 
-    private List<Map<String, String>> mapErrorsToApiFields(List<ObjectError> errors) {
+    private List<Map<String, String>> mapErrorsToApiFields(final List<ObjectError> errors) {
         return errors.stream()
                 .map(error -> {
                     Map<String, String> errorField = new HashMap<>();
