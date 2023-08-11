@@ -26,7 +26,7 @@ spring:
 ead:
   api:
     course:
-      url: http://localhost:8087
+      url: http://ead-authuser
 
 eureka:
   instance:
