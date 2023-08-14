@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 2000
+        response-timeout: 3s
+      routes:
+        - id: ms-ead
+          uri: lb://ead-course
+          predicates:
+            - Path=/ms-ead/**
+          filters:
+            - RewritePath=/ms-ead(?<segment>/?.*), $\{segment}
+
+logging:
+  level:
+    br.com.gateway.*: info
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-}]"
