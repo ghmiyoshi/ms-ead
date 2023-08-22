@@ -4,6 +4,7 @@ import com.ead.course.models.Lesson;
 import com.ead.course.repositories.LessonRepository;
 import com.ead.course.services.LessonService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -12,8 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 import java.util.UUID;
 
-import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LessonServiceImpl implements LessonService {
@@ -22,7 +24,8 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public void deleteLessons(final Set<Lesson> lessons) {
-        if (nonNull(lessons) || !lessons.isEmpty()) {
+        log.info("{}::deleteLessons - Delete lessons: {}", getClass().getSimpleName(), lessons);
+        if (isNotEmpty(lessons)) {
             lessonRepository.deleteAll(lessons);
         }
     }

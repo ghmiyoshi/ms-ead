@@ -31,6 +31,7 @@ public class UserCourseController {
     @GetMapping("/users/{userId}/courses")
     public ResponseEntity<Page<CourseDTO>> getAllCoursesByUser(@PageableDefault(page = 0, size = 10, sort = "courseId",
             direction = Sort.Direction.ASC) final Pageable pageable, @PathVariable final UUID userId) {
+        userService.findById(userId);
         return ResponseEntity.ok(courseClient.getAllCoursesByUser(pageable, userId));
     }
 
@@ -43,6 +44,15 @@ public class UserCourseController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(userCourseService.saveSubscriptionUserIndCourse(user,
                                                                                                               userCourseDTO.courseId()));
+    }
+
+    @DeleteMapping("/users/courses/{courseId}")
+    public ResponseEntity<?> deleteUserCourseByCourse(@PathVariable final UUID courseId) {
+        if (userCourseService.existsByCourseId(courseId)) {
+            userCourseService.deleteUserCourseByCourse(courseId);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: UserCourse not found!");
     }
 
 }

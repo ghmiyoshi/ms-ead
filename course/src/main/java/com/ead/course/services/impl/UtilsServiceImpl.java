@@ -30,4 +30,9 @@ public class UtilsServiceImpl implements UtilsService {
         return String.format("%s/users/%s/courses/subscription", requestUri, userId);
     }
 
+    @Override
+    public String deleteUserInCourse(final UUID courseId) {
+        return String.format("%s/users/courses/%s", requestUri, courseId);
+    }
+
 }

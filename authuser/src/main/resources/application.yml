@@ -23,6 +23,8 @@ spring:
 logging:
   level:
     com.ead.authuser: debug
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-}]"
 
 ead:
   api:

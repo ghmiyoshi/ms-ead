@@ -25,7 +25,7 @@ import static com.ead.course.enums.UserStatus.ACTIVE;
 @Component
 public class UserClient {
 
-    public static final String REQUEST_URL = "Request URL: {} ";
+    private static final String REQUEST_URL = "Request URL: {} ";
     private final UtilsService utilsService;
     private final RestTemplate restTemplate;
 
@@ -39,6 +39,8 @@ public class UserClient {
     public UserDTO getUserByIdAndValidateStatus(final UUID userId) {
         final var user = getUserById(userId);
         if (ACTIVE.equals(user.userStatus())) {
+            log.info("{}::getUserByIdAndValidateStatus - Active user id: {}", getClass().getSimpleName(),
+                     user.userId());
             return user;
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not active");
@@ -55,6 +57,12 @@ public class UserClient {
         final var url = utilsService.subscriptionUserInCourse(userId);
         log.info(REQUEST_URL, url);
         restTemplate.postForObject(url, new CourseUserDTO(courseId), String.class);
+    }
+
+    public void deleteCourseInAuthUser(final UUID courseId) {
+        final var url = utilsService.deleteUserInCourse(courseId);
+        log.info(REQUEST_URL, url);
+        restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
     }
 
 }

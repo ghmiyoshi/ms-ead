@@ -15,12 +15,18 @@ spring:
         connect-timeout: 2000
         response-timeout: 3s
       routes:
-        - id: ms-ead
-          uri: lb://ead-course
+        - id: ead-course
+          uri: lb://EAD-COURSE
           predicates:
-            - Path=/ms-ead/**
+            - Path=/ms-ead/course/**
           filters:
-            - RewritePath=/ms-ead(?<segment>/?.*), $\{segment}
+            - RewritePath=/ms-ead/course(?<segment>/?.*), $\{segment}
+        - id: ead-authuser
+          uri: lb://EAD-AUTHUSER
+          predicates:
+            - Path=/ms-ead/authuser/**
+          filters:
+            - RewritePath=/ms-ead/authuser(?<segment>/?.*), $\{segment}
 
 logging:
   level:

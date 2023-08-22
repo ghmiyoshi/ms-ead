@@ -1,5 +1,6 @@
 package com.ead.authuser.services.impl;
 
+import com.ead.authuser.clients.CourseClient;
 import com.ead.authuser.dtos.UserRequestDTO;
 import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.User;
@@ -19,7 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.UUID;
 
-import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 @Slf4j
 @Service
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private UserCourseRepository userCourseRepository;
+    private CourseClient courseClient;
 
     @Cacheable
     @Override
@@ -37,16 +39,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(final UUID userId) {
+        log.info("{}::findById - user id: {}", getClass().getSimpleName(), userId);
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
     @Override
     public void deleteById(final UUID userId) {
-        var user = this.findById(userId);
+        var user = findById(userId);
         List<UserCourse> userCourses = userCourseRepository.findAllByUserUserId(userId);
-        if (nonNull(userCourses) && !userCourses.isEmpty()) {
+        if (isNotEmpty(userCourses)) {
             userCourseRepository.deleteAll(userCourses);
+            courseClient.deleteUserInCourse(userId);
         }
         userRepository.delete(user);
     }
@@ -60,7 +64,7 @@ public class UserServiceImpl implements UserService {
     public void validateUser(final UserRequestDTO userRequest) {
         if (userRepository.existsUserByUsernameOrEmail(userRequest.username(), userRequest.email())) {
             log.error("{}::validateUser - User is already taken", getClass().getSimpleName());
-            throw new RuntimeException("User is already taken");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is already taken");
         }
     }
 
@@ -85,7 +89,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updatePassword(final User user, final UserRequestDTO userRequest) {
         user.setPassword(userRequest.password());
-        System.out.println("Pedido concluído");
     }
 
     @Override

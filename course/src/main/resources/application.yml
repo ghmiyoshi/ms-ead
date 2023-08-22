@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 0
 
 spring:
   application:
@@ -35,3 +35,7 @@ eureka:
   client:
     service-url:
       default-zone: http://localhost:8761/eureka
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-}]"

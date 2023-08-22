@@ -46,6 +46,7 @@ public class CourseController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{courseId}")
     public void deleteCourse(@PathVariable final UUID courseId) {
+        log.info("{}::deleteCourse - received id: {}", getClass().getSimpleName(), courseId);
         courseService.deleteCourse(courseId);
     }
 

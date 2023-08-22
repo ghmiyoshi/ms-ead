@@ -7,6 +7,7 @@ import com.ead.course.services.ModuleService;
 import com.ead.course.specs.ModuleFilter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import java.util.UUID;
 
 import static com.ead.course.specs.ModuleSpecificationBuilder.toSpec;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -60,6 +62,7 @@ public class ModuleController {
                                                       @PageableDefault(page = 0, size = 10, sort = "moduleId",
                                                               direction = Sort.Direction.ASC) final Pageable pageable) {
         final var moduleFilter = ModuleFilter.createFilter(title, courseId);
+        log.info("{}::getAllModules - All modules by course id", getClass().getSimpleName(), courseId);
         return ResponseEntity.ok(moduleService.findAllModulesByCourseId(toSpec(moduleFilter), pageable));
     }
 

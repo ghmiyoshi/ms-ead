@@ -19,6 +19,7 @@ import java.util.UUID;
 @Component
 public class CourseClient {
 
+    private static final String REQUEST_URL = "Request URL: {} ";
     private final UtilsService utilsService;
     private final RestTemplate restTemplate;
 
@@ -28,6 +29,12 @@ public class CourseClient {
         log.info("{}::getAllCoursesByUser - Request URL: {} ", getClass().getSimpleName(), url);
         ParameterizedTypeReference<ResponsePageDTO<CourseDTO>> responseType = new ParameterizedTypeReference<>() {};
         return restTemplate.exchange(url, HttpMethod.GET, null, responseType).getBody();
+    }
+
+    public void deleteUserInCourse(final UUID userId) {
+        final var url = utilsService.deleteUserInCourse(userId);
+        log.info(REQUEST_URL, url);
+        restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
     }
 
 }

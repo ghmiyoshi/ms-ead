@@ -11,4 +11,8 @@ public interface UserCourseService {
 
     boolean existsByUserAndCourseId(final UUID userId, final UUID courseId);
 
+    boolean existsByCourseId(UUID courseId);
+
+    void deleteUserCourseByCourse(UUID courseId);
+
 }

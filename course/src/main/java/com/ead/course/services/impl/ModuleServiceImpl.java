@@ -5,6 +5,7 @@ import com.ead.course.repositories.ModuleRepository;
 import com.ead.course.services.LessonService;
 import com.ead.course.services.ModuleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -12,8 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ModuleServiceImpl implements ModuleService {
@@ -23,7 +25,8 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public void deleteModule(final Module module) {
-        if (nonNull(module.getLessons()) && !module.getLessons().isEmpty()) {
+        log.info("{}::deleteModule - Delete module: {}", getClass().getSimpleName(), module);
+        if (isNotEmpty(module.getLessons())) {
             lessonService.deleteLessons(module.getLessons());
         }
         moduleRepository.delete(module);
@@ -31,11 +34,14 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public Module saveModule(final Module module) {
+        log.info("{}::saveModule - received: {}", getClass().getSimpleName(), module);
         return moduleRepository.save(module);
     }
 
     @Override
     public Module findByModuleIdAndCourseId(final UUID moduleId, final UUID courseId) {
+        log.info("{}::findByModuleIdAndCourseId - Module id: {} and course id: {}", getClass().getSimpleName(),
+                 moduleId, courseId);
         return moduleRepository.findByModuleIdAndCourseId(moduleId, courseId).orElseThrow(() -> new RuntimeException(
                 "Module not found for this course"));
     }

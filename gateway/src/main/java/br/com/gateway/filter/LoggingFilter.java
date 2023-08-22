@@ -30,6 +30,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class LoggingFilter implements GlobalFilter, Ordered {
 
+    private static final String REQUEST_ID_HEADER_NAME = "request-id";
     private Tracer tracer;
 
     private static final Set<String> LOGGABLE_CONTENT_TYPES = new HashSet<>(
@@ -59,7 +60,7 @@ public class LoggingFilter implements GlobalFilter, Ordered {
         };
 
         ServerHttpResponse response = exchange.getResponse();
-        response.getHeaders().add("tracer-id", traceId);
+        response.getHeaders().add(REQUEST_ID_HEADER_NAME, traceId);
         var responseMutated = new ServerHttpResponseDecorator(response) {
             @Override
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
@@ -121,7 +122,6 @@ public class LoggingFilter implements GlobalFilter, Ordered {
                               
                               Body: %s""".formatted(StandardCharsets.UTF_8.decode(byteBuffer).toString().replaceAll(
                                       "\\s+", "")));
-
         }
 
         private void log() {

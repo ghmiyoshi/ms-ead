@@ -7,6 +7,7 @@ import com.ead.authuser.services.UserCourseService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -25,6 +26,17 @@ public class UserCourseServiceImpl implements UserCourseService {
     @Override
     public boolean existsByUserAndCourseId(final UUID userId, final UUID courseId) {
         return userCourseRepository.existsByUserUserIdAndCourseId(userId, courseId);
+    }
+
+    @Override
+    public boolean existsByCourseId(final UUID courseId) {
+        return userCourseRepository.existsByCourseId(courseId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUserCourseByCourse(final UUID courseId) {
+        userCourseRepository.deleteAllByCourseId(courseId);
     }
 
 }

@@ -6,10 +6,12 @@ import java.util.UUID;
 
 public interface CourseUserService {
 
-    boolean existsByCourseAndUserId(final UUID courseId, final UUID uuid);
-
-    CourseUser saveSubscriptionUserInCourse(final CourseUser courseUser);
+    boolean existsByCourseAndUserId(UUID courseId, UUID uuid);
 
     CourseUser saveAndSendSubscriptionUserInCourse(CourseUser courseUser);
-    
+
+    boolean existsByUserId(UUID userId);
+
+    void deleteUserCourseByUser(UUID userId);
+
 }
