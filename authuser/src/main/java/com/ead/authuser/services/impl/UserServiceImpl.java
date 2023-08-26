@@ -1,11 +1,8 @@
 package com.ead.authuser.services.impl;
 
-import com.ead.authuser.clients.CourseClient;
 import com.ead.authuser.dtos.UserRequestDTO;
 import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.User;
-import com.ead.authuser.models.UserCourse;
-import com.ead.authuser.repositories.UserCourseRepository;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
 import lombok.AllArgsConstructor;
@@ -17,10 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.UUID;
-
-import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 @Slf4j
 @Service
@@ -28,8 +22,6 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
-    private UserCourseRepository userCourseRepository;
-    private CourseClient courseClient;
 
     @Cacheable
     @Override
@@ -47,11 +39,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(final UUID userId) {
         var user = findById(userId);
-        List<UserCourse> userCourses = userCourseRepository.findAllByUserUserId(userId);
-        if (isNotEmpty(userCourses)) {
-            userCourseRepository.deleteAll(userCourses);
-            courseClient.deleteUserInCourse(userId);
-        }
         userRepository.delete(user);
     }
 

@@ -3,7 +3,6 @@ package com.ead.authuser.specs;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.User;
-import com.ead.authuser.models.UserCourse;
 import com.ead.authuser.models.UserCourse_;
 import com.ead.authuser.models.User_;
 import jakarta.persistence.criteria.Join;

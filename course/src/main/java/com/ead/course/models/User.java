@@ -13,24 +13,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "tb_courses_users")
-public class CourseUser {
+@Table(name = "tb_users")
+public class User {
 
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "course_id", nullable = false)
-    private Course course;
-
-    @Column(nullable = false)
     private UUID userId;
-
-    public CourseUser(final Course course, final UUID userId) {
-        this.course = course;
-        this.userId = userId;
-    }
 
 }

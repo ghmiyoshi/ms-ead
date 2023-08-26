@@ -35,10 +35,11 @@ public class UserController {
 
     @GetMapping
     @JsonView(UserResponseDTO.Response.UserGet.class)
-    public Page<UserResponseDTO> getAllUsers(@PageableDefault(page = 0, size = 10, sort = "userId",
-            direction = Sort.Direction.ASC) final Pageable pageable,
-                                             @RequestParam(required = false) final UUID courseId) {
-        final var userFilter = UserFilter.createFilter(null, null, null, courseId);
+    public Page<UserResponseDTO> getAllUsers(@PageableDefault(page = 0, size = 10, sort = "userId", direction =
+            Sort.Direction.ASC) final Pageable pageable, @RequestParam UserType userType,
+                                             @RequestParam UserStatus userStatus,
+                                             @RequestParam String email) {
+        final var userFilter = UserFilter.createFilter(userType, userStatus, email);
         return userRepository.findAll(toSpec(userFilter), pageable).map(UserResponseDTO::from);
     }
 
@@ -93,9 +94,8 @@ public class UserController {
     @JsonView(UserResponseDTO.Response.UserGet.class)
     public List<UserResponseDTO> getUserSpecs(@RequestParam(required = false) final UserType userType,
                                               @RequestParam(required = false) final UserStatus userStatus,
-                                              @RequestParam(required = false) final String email,
-                                              @RequestParam(required = false) final UUID courseId) {
-        final var userFilter = UserFilter.createFilter(userType, userStatus, email, courseId);
+                                              @RequestParam(required = false) final String email) {
+        final var userFilter = UserFilter.createFilter(userType, userStatus, email);
         return userRepository.findAll(toSpec(userFilter))
                 .stream().map(UserResponseDTO::from).toList();
     }

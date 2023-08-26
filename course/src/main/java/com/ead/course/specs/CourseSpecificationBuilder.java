@@ -3,15 +3,10 @@ package com.ead.course.specs;
 import com.ead.course.enums.CourseLevel;
 import com.ead.course.enums.CourseStatus;
 import com.ead.course.models.Course;
-import com.ead.course.models.CourseUser;
-import com.ead.course.models.CourseUser_;
 import com.ead.course.models.Course_;
-import jakarta.persistence.criteria.Join;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
-
-import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 
@@ -34,10 +29,6 @@ public class CourseSpecificationBuilder {
             specification = specification.and(byName(courseFilter.name()));
         }
 
-        if (nonNull(courseFilter.userId())) {
-            specification = specification.and(byCourseUserId(courseFilter.userId()));
-        }
-
         return specification;
     }
 
@@ -51,13 +42,6 @@ public class CourseSpecificationBuilder {
 
     private static Specification<Course> byName(final String name) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get(Course_.NAME), "%" + name + "%");
-    }
-
-    private static Specification<Course> byCourseUserId(final UUID userId) {
-        return (root, query, criteriaBuilder) -> {
-            Join<Course, CourseUser> courseUsers = root.join(Course_.COURSES_USERS);
-            return criteriaBuilder.equal(courseUsers.get(CourseUser_.USER_ID), userId);
-        };
     }
 
 }
