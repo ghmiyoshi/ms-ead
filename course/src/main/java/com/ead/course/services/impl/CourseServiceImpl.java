@@ -1,6 +1,7 @@
 package com.ead.course.services.impl;
 
 import com.ead.course.models.Course;
+import com.ead.course.models.User;
 import com.ead.course.repositories.CourseRepository;
 import com.ead.course.repositories.UserRepository;
 import com.ead.course.services.CourseService;
@@ -25,7 +26,7 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
-    private final UserRepository courseUserRepository;
+    private final UserRepository userRepository;
     private final ModuleService moduleService;
 
     @Transactional
@@ -35,7 +36,7 @@ public class CourseServiceImpl implements CourseService {
         if (isNotEmpty(course.getModules())) {
             course.getModules().stream().forEach(moduleService::deleteModule);
         }
-        
+
         courseRepository.delete(course);
     }
 
@@ -56,6 +57,13 @@ public class CourseServiceImpl implements CourseService {
     public Page<Course> findAllCourses(final Specification<Course> spec, final Pageable pageable) {
         log.info("{}::findAllCourses - Searching courses with spec: {}", getClass().getSimpleName(), spec);
         return courseRepository.findAll(spec, pageable);
+    }
+
+    @Override
+    public Page<User> findAllUsersByCourse(final Specification<User> spec, final Pageable pageable) {
+        log.info("{}::findAllUsersByCourse - Searching all users by course with spec: {}", getClass().getSimpleName(),
+                 spec);
+        return userRepository.findAll(spec, pageable);
     }
 
 }

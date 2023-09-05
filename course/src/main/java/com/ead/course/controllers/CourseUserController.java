@@ -2,6 +2,7 @@ package com.ead.course.controllers;
 
 import com.ead.course.dtos.SubscriptionDTO;
 import com.ead.course.services.CourseService;
+import com.ead.course.specs.UserFilter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import static com.ead.course.specs.UserSpecificationBuilder.toSpec;
+
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -21,10 +24,16 @@ public class CourseUserController {
     private final CourseService courseService;
 
     @GetMapping("/courses/{courseId}/users")
-    public ResponseEntity<Object> getAllUsersByCourse(@PathVariable final UUID courseId, @PageableDefault(sort =
-            "userId", direction = Sort.Direction.ASC) final Pageable pageable) {
+    public ResponseEntity<Object> getAllUsersByCourse(@RequestParam(required = false) final String userType,
+                                                      @RequestParam(required = false) final String userStatus,
+                                                      @RequestParam(required = false) final String email,
+                                                      @RequestParam(required = false) final String fullName,
+                                                      @PathVariable final UUID courseId,
+                                                      @PageableDefault(sort = "userId", direction =
+                                                              Sort.Direction.ASC) final Pageable pageable) {
+        var userFilter = UserFilter.createFilter(userType, userStatus, email, fullName, courseId);
         courseService.findCourseById(courseId);
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(courseService.findAllUsersByCourse(toSpec(userFilter), pageable));
     }
 
     @PostMapping("/courses/{courseId}/users/subscription")

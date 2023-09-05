@@ -48,4 +48,12 @@ public class Course extends DefaultModel {
     @OneToMany(mappedBy = "course")
     private Set<Module> modules;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToMany
+    @JoinTable(
+            name = "tb_courses_users",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> users;
+
 }
