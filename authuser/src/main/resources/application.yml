@@ -19,6 +19,11 @@ spring:
     property-naming-strategy: SNAKE_CASE
     deserialization:
       fail-on-unknown-properties: true
+  rabbitmq:
+    addresses: localhost
+    port: 5672
+    username: guest
+    password: guest
 
 logging:
   level:
