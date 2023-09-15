@@ -1,8 +1,10 @@
 package com.ead.authuser.services.impl;
 
+import com.ead.authuser.dtos.UserEventDTO;
 import com.ead.authuser.dtos.UserRequestDTO;
 import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.User;
+import com.ead.authuser.publisher.UserEventPubliser;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
 import lombok.AllArgsConstructor;
@@ -12,9 +14,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
+
+import static com.ead.authuser.enums.ActionType.CREATE;
 
 @Slf4j
 @Service
@@ -22,6 +27,7 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
+    private UserEventPubliser userEventPubliser;
 
     @Cacheable
     @Override
@@ -81,6 +87,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateImageUrl(final User user, final String imageUrl) {
         user.setImageUrl(imageUrl);
+    }
+
+    @Transactional
+    @Override
+    public User saveUser(final User user) {
+        var userSaved = save(user);
+        userEventPubliser.publishUserEvent(UserEventDTO.from(userSaved, CREATE));
+        return userSaved;
     }
 
 }

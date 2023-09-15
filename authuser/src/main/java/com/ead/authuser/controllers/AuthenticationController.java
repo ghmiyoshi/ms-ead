@@ -29,7 +29,7 @@ public class AuthenticationController {
         userService.validateUser(userRequest);
         var user = userService.newStudent();
         BeanUtils.copyProperties(userRequest, user);
-        userService.save(user);
+        userService.saveUser(user);
         log.debug("{}::registerUSer - saved: {}", getClass().getSimpleName(), user);
         return UserResponseDTO.from(user);
     }

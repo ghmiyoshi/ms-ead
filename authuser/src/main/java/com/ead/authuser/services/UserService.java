@@ -29,4 +29,6 @@ public interface UserService {
 
     void updateImageUrl(User user, String imageUrl);
 
+    User saveUser(User user);
+
 }
