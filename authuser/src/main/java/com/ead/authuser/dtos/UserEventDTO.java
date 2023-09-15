@@ -3,6 +3,7 @@ package com.ead.authuser.dtos;
 import com.ead.authuser.enums.ActionType;
 import com.ead.authuser.models.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 
@@ -10,8 +11,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class UserEventDTO {
-    
+
     private UUID userId;
     private String username;
     private String email;

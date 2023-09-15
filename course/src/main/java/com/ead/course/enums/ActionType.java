@@ -14,13 +14,13 @@ public enum ActionType {
     UPDATE {
         @Override
         public void execute(UserService userService, UserEventDTO userEventDTO) {
-
+            userService.save(userEventDTO.convertToUser());
         }
     },
     DELETE {
         @Override
         public void execute(UserService userService, UserEventDTO userEventDTO) {
-
+            userService.deleteById(userEventDTO.getUserId());
         }
     };
 

@@ -53,7 +53,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable final UUID userId) {
         log.info("{}::deleteUser - user id received: {}", getClass().getSimpleName(), userId);
-        userService.deleteById(userId);
+        userService.deleteUser(userId);
         log.info("{}::deleteUser - deleted user id {}", getClass().getSimpleName(), userId);
     }
 
@@ -65,7 +65,7 @@ public class UserController {
         log.info("{}::updateUser - received: {}", getClass().getSimpleName(), userRequest);
         var user = userService.findById(userId);
         userService.updateFullNameAndPhoneNumber(user, userRequest);
-        user = userService.save(user);
+        user = userService.saveUser(user);
         log.info("{}::updateUser - saved: {}", getClass().getSimpleName(), user);
         return UserResponseDTO.from(user);
     }
@@ -76,7 +76,7 @@ public class UserController {
                                  @JsonView(UserRequestDTO.Request.PasswordPut.class) final UserRequestDTO userRequest) {
         var user = userService.findById(userId);
         userService.updatePassword(user, userRequest);
-        userService.save(user);
+        userService.saveUser(user);
         return "Password updated successfully";
     }
 
@@ -86,7 +86,7 @@ public class UserController {
                               @JsonView(UserRequestDTO.Request.ImagePut.class) final UserRequestDTO userRequest) {
         var user = userService.findById(userId);
         userService.updateImageUrl(user, userRequest.imageUrl());
-        userService.save(user);
+        userService.updatePasswordUser(user);
         return "Image url updated successfully";
     }
 

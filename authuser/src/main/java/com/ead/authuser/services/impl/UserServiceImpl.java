@@ -19,7 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
-import static com.ead.authuser.enums.ActionType.CREATE;
+import static com.ead.authuser.enums.ActionType.*;
 
 @Slf4j
 @Service
@@ -104,6 +104,29 @@ public class UserServiceImpl implements UserService {
         userEventPubliser.publishUserEvent(UserEventDTO.from(userSaved, CREATE));
         log.info("{}::saveUser - Send message for queue: {}", getClass().getSimpleName(), userSaved);
         return userSaved;
+    }
+
+    @Override
+    public void deleteUser(UUID userId) {
+        deleteById(userId);
+        var userEvent = new UserEventDTO();
+        userEvent.setUserId(userId);
+        userEvent.setActionType(DELETE.name());
+        userEventPubliser.publishUserEvent(userEvent);
+    }
+
+    @Transactional
+    @Override
+    public User updateUser(User user) {
+        var userSaved = save(user);
+        userEventPubliser.publishUserEvent(UserEventDTO.from(userSaved, UPDATE));
+        log.info("{}::updateUser - Send message for queue: {}", getClass().getSimpleName(), userSaved);
+        return userSaved;
+    }
+
+    @Override
+    public User updatePasswordUser(User user) {
+        return save(user);
     }
 
 }

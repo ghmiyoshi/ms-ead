@@ -31,4 +31,10 @@ public interface UserService {
 
     User saveUser(User user);
 
+    void deleteUser(UUID userId);
+
+    User updateUser(User user);
+
+    User updatePasswordUser(User user);
+
 }
