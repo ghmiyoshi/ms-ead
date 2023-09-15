@@ -1,4 +1,4 @@
-package com.ead.authuser.utils;
+package com.ead.course.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;

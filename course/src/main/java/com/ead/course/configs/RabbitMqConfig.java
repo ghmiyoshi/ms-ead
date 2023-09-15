@@ -1,7 +1,6 @@
 package com.ead.course.configs;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ead.course.utils.ObjectMapperUtils;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -21,9 +20,7 @@ public class RabbitMqConfig {
 
     @Bean
     public Jackson2JsonMessageConverter converteMensagem() {
-        var objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        return new Jackson2JsonMessageConverter(objectMapper);
+        return new Jackson2JsonMessageConverter(ObjectMapperUtils.objectMapper());
     }
 
 }

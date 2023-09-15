@@ -1,3 +1,9 @@
 package com.ead.course.services;
 
-public interface UserService {}
+import com.ead.course.models.User;
+
+public interface UserService {
+
+    User save(User user);
+
+}

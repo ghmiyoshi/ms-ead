@@ -23,7 +23,7 @@ spring:
   #    problemdetails:
   #      enabled: true
   rabbitmq:
-    addresses: localhost
+    host: localhost
     port: 5672
     username: guest
     password: guest
@@ -32,6 +32,12 @@ ead:
   api:
     course:
       url: http://ead-authuser
+  broker:
+    exchange:
+      userEventExchange: ead.userevent
+    queue:
+      userEventQueue:
+        name: ead.userevent.ms.course
 
 eureka:
   instance:

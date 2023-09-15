@@ -46,10 +46,12 @@ public class UserServiceImpl implements UserService {
     public void deleteById(final UUID userId) {
         var user = findById(userId);
         userRepository.delete(user);
+        log.info("{}::deleteById - user id: {}", getClass().getSimpleName(), userId);
     }
 
     @Override
     public User save(final User user) {
+        log.info("{}::save - user: {}", getClass().getSimpleName(), user);
         return userRepository.save(user);
     }
 
@@ -70,22 +72,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void subscriptionInstructor(final User user) {
+        log.info("{}::subscriptionInstructor - Subscription user for instructor: {}",
+                 getClass().getSimpleName(), user);
         user.setUserType(UserType.INSTRUCTOR);
     }
 
     @Override
     public void updateFullNameAndPhoneNumber(final User user, final UserRequestDTO userRequest) {
+        log.info("{}::updateFullNameAndPhoneNumber - Update full name and phone number",
+                 getClass().getSimpleName());
         user.setFullName(userRequest.fullName());
         user.setPhoneNumber(userRequest.phoneNumber());
     }
 
     @Override
     public void updatePassword(final User user, final UserRequestDTO userRequest) {
+        log.info("{}::updatePassword - Update password", getClass().getSimpleName());
         user.setPassword(userRequest.password());
     }
 
     @Override
     public void updateImageUrl(final User user, final String imageUrl) {
+        log.info("{}::updateImageUrl - Update image url", getClass().getSimpleName());
         user.setImageUrl(imageUrl);
     }
 
@@ -94,6 +102,7 @@ public class UserServiceImpl implements UserService {
     public User saveUser(final User user) {
         var userSaved = save(user);
         userEventPubliser.publishUserEvent(UserEventDTO.from(userSaved, CREATE));
+        log.info("{}::saveUser - Send message for queue: {}", getClass().getSimpleName(), userSaved);
         return userSaved;
     }
 

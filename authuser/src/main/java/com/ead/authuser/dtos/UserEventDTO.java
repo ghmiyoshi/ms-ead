@@ -11,6 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class UserEventDTO {
+    
     private UUID userId;
     private String username;
     private String email;
