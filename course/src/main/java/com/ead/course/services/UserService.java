@@ -10,4 +10,8 @@ public interface UserService {
 
     void deleteById(UUID userId);
 
+    User findById(UUID userInstructor);
+
+    void isBlocked(User user);
+
 }

@@ -12,7 +12,7 @@ import java.util.UUID;
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "tb_lesson")
+@Table(name = "tb_lessons")
 public class Lesson extends DefaultModel {
 
     @EqualsAndHashCode.Include

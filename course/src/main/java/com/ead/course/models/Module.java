@@ -13,7 +13,7 @@ import java.util.UUID;
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "tb_module")
+@Table(name = "tb_modules")
 public class Module extends DefaultModel {
 
     @EqualsAndHashCode.Include

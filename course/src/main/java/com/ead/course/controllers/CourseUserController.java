@@ -2,6 +2,7 @@ package com.ead.course.controllers;
 
 import com.ead.course.dtos.SubscriptionDTO;
 import com.ead.course.services.CourseService;
+import com.ead.course.services.UserService;
 import com.ead.course.specs.UserFilter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import static com.ead.course.specs.UserSpecificationBuilder.toSpec;
 public class CourseUserController {
 
     private final CourseService courseService;
+    private final UserService userService;
 
     @GetMapping("/courses/{courseId}/users")
     public ResponseEntity<Object> getAllUsersByCourse(@RequestParam(required = false) final String userType,
@@ -39,9 +41,14 @@ public class CourseUserController {
     @PostMapping("/courses/{courseId}/users/subscription")
     public ResponseEntity<Object> saveSubscriptionUserInCourse(@PathVariable final UUID courseId,
                                                                @RequestBody @Valid final SubscriptionDTO subscriptionDTO) {
-        var course = courseService.findCourseById(courseId);
-        // TODO verificacoes state transfer
-        return ResponseEntity.status(HttpStatus.CREATED).body("");
+        courseService.findCourseById(courseId);
+        
+        var user = userService.findById(subscriptionDTO.userId());
+        userService.isBlocked(user);
+
+        courseService.existsByCourseAndUser(courseId, subscriptionDTO.userId());
+        courseService.saveSubscriptionUserInCourse(courseId, user.getUserId());
+        return ResponseEntity.status(HttpStatus.CREATED).body("Subscription created");
     }
 
     @DeleteMapping("/courses/users/{userId}")

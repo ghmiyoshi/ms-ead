@@ -9,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -42,8 +44,8 @@ public class ModuleServiceImpl implements ModuleService {
     public Module findByModuleIdAndCourseId(final UUID moduleId, final UUID courseId) {
         log.info("{}::findByModuleIdAndCourseId - Module id: {} and course id: {}", getClass().getSimpleName(),
                  moduleId, courseId);
-        return moduleRepository.findByModuleIdAndCourseId(moduleId, courseId).orElseThrow(() -> new RuntimeException(
-                "Module not found for this course"));
+        return moduleRepository.findByModuleIdAndCourseId(moduleId, courseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                                                                                            "Module not found for this course"));
     }
 
     @Override
@@ -54,7 +56,8 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public Module findModuleById(final UUID moduleId) {
-        return moduleRepository.findById(moduleId).orElseThrow(() -> new RuntimeException("Module not found"));
+        return moduleRepository.findById(moduleId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                                                                 "Module not found"));
     }
 
 }

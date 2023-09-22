@@ -66,4 +66,18 @@ public class CourseServiceImpl implements CourseService {
         return userRepository.findAll(spec, pageable);
     }
 
+    @Override
+    public void existsByCourseAndUser(UUID courseId, UUID userId) {
+        var existsSubscription = courseRepository.existsByCourseAndUser(courseId, userId).equals(1L) ? true : false;
+        if (existsSubscription) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User already subscribed in course");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void saveSubscriptionUserInCourse(UUID courseId, UUID userId) {
+        courseRepository.saveCourseUser(courseId, userId);
+    }
+
 }

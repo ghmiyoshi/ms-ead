@@ -2,6 +2,7 @@ package com.ead.course.dtos;
 
 import com.ead.course.enums.CourseLevel;
 import com.ead.course.enums.CourseStatus;
+import com.ead.course.utils.ObjectMapperUtils;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -19,4 +20,11 @@ public record CourseDTO(
         UUID userInstructor,
         @NotNull
         CourseLevel courseLevel
-) {}
+) {
+
+    @Override
+    public String toString() {
+        return ObjectMapperUtils.writeObjectInJson(this);
+    }
+
+}
