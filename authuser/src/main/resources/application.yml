@@ -1,5 +1,5 @@
 server:
-  port: 8087
+  port: 0
 
 spring:
   application:
@@ -46,3 +46,10 @@ eureka:
   client:
     service-url:
       default-zone: http://localhost:8761/eureka
+
+resilience4j:
+  retry:
+    instances:
+      retryInstance:
+        max-attempts: 3
+        wait-duration: 5s

@@ -23,9 +23,4 @@ public class UtilsServiceImpl implements UtilsService {
                              pageable.getSort().toString().replace(": ", ","));
     }
 
-    @Override
-    public String deleteUserInCourse(final UUID userId) {
-        return String.format("%s/courses/users/%s", requestUri, userId);
-    }
-
 }

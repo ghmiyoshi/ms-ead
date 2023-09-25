@@ -42,18 +42,13 @@ public class CourseUserController {
     public ResponseEntity<Object> saveSubscriptionUserInCourse(@PathVariable final UUID courseId,
                                                                @RequestBody @Valid final SubscriptionDTO subscriptionDTO) {
         courseService.findCourseById(courseId);
-        
+
         var user = userService.findById(subscriptionDTO.userId());
         userService.isBlocked(user);
 
         courseService.existsByCourseAndUser(courseId, subscriptionDTO.userId());
         courseService.saveSubscriptionUserInCourse(courseId, user.getUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body("Subscription created");
-    }
-
-    @DeleteMapping("/courses/users/{userId}")
-    public ResponseEntity<Object> deleteUserCourseByUser(@PathVariable final UUID userId) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("UserCourse not found");
     }
 
 }
