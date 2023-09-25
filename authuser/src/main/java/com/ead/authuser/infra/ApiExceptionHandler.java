@@ -62,10 +62,10 @@ public class ApiExceptionHandler {
 
     private String createUrl(final HttpStatusCode httpStatusCode) {
         return switch (httpStatusCode.value()) {
-            case 400 -> "https://api.med.com/errors/bad-request";
-            case 404 -> "https://api.med.com/errors/not-found";
-            case 500 -> "https://api.med.com/errors/internal-server-error";
-            default -> "https://api.med.com/errors";
+            case 400 -> "https://api.ead.com/errors/bad-request";
+            case 404 -> "https://api.ead.com/errors/not-found";
+            case 500 -> "https://api.ead.com/errors/internal-server-error";
+            default -> "https://api.ead.com/errors";
         };
     }
 

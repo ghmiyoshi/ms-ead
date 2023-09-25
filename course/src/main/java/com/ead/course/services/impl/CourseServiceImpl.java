@@ -36,7 +36,7 @@ public class CourseServiceImpl implements CourseService {
         if (isNotEmpty(course.getModules())) {
             course.getModules().stream().forEach(moduleService::deleteModule);
         }
-
+        courseRepository.deleteCourseUserByCourse(courseId);
         courseRepository.delete(course);
     }
 
