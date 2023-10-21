@@ -3,7 +3,7 @@ package com.ead.authuser.clients;
 import com.ead.authuser.dtos.CourseDTO;
 import com.ead.authuser.dtos.ResponsePageDTO;
 import com.ead.authuser.services.UtilsService;
-import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -24,7 +24,8 @@ public class CourseClient {
     private final UtilsService utilsService;
     private final RestTemplate restTemplate;
 
-    @Retry(name = "retryInstance", fallbackMethod = "getAllCoursesFallback")
+    // @Retry(name = "retryInstance", fallbackMethod = "getAllCoursesFallback")
+    @CircuitBreaker(name = "circuitbreakerInstance", fallbackMethod = "getAllCoursesFallback")
     public Page<CourseDTO> getAllCoursesByUser(final Pageable pageable, final UUID userId) {
         log.info("{}::getAllCoursesByUser - user id received: {}", getClass().getSimpleName(), userId);
         final var url = utilsService.createUrl(userId, pageable);
