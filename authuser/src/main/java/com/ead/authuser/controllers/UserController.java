@@ -36,9 +36,9 @@ public class UserController {
     @GetMapping
     @JsonView(UserResponseDTO.Response.UserGet.class)
     public Page<UserResponseDTO> getAllUsers(@PageableDefault(page = 0, size = 10, sort = "userId", direction =
-            Sort.Direction.ASC) final Pageable pageable, @RequestParam UserType userType,
-                                             @RequestParam UserStatus userStatus,
-                                             @RequestParam String email) {
+            Sort.Direction.ASC) final Pageable pageable, @RequestParam(required = false) UserType userType,
+                                             @RequestParam(required = false) UserStatus userStatus,
+                                             @RequestParam(required = false) String email) {
         final var userFilter = UserFilter.createFilter(userType, userStatus, email);
         return userRepository.findAll(toSpec(userFilter), pageable).map(UserResponseDTO::from);
     }
