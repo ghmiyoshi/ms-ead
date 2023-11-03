@@ -1,10 +1,9 @@
 package com.ead.course.services.impl;
 
-import com.ead.course.clients.UserClient;
 import com.ead.course.models.Course;
-import com.ead.course.models.CourseUser;
+import com.ead.course.models.User;
 import com.ead.course.repositories.CourseRepository;
-import com.ead.course.repositories.CourseUserRepository;
+import com.ead.course.repositories.UserRepository;
 import com.ead.course.services.CourseService;
 import com.ead.course.services.ModuleService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.UUID;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
@@ -28,9 +26,8 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
-    private final CourseUserRepository courseUserRepository;
+    private final UserRepository userRepository;
     private final ModuleService moduleService;
-    private final UserClient userClient;
 
     @Transactional
     @Override
@@ -39,12 +36,7 @@ public class CourseServiceImpl implements CourseService {
         if (isNotEmpty(course.getModules())) {
             course.getModules().stream().forEach(moduleService::deleteModule);
         }
-
-        List<CourseUser> allCourseUser = courseUserRepository.findAllCourseUserIntoCourse(courseId);
-        if (isNotEmpty(allCourseUser)) {
-            courseUserRepository.deleteAll(allCourseUser);
-            userClient.deleteCourseInAuthUser(courseId);
-        }
+        courseRepository.deleteCourseUserByCourse(courseId);
         courseRepository.delete(course);
     }
 
@@ -65,6 +57,27 @@ public class CourseServiceImpl implements CourseService {
     public Page<Course> findAllCourses(final Specification<Course> spec, final Pageable pageable) {
         log.info("{}::findAllCourses - Searching courses with spec: {}", getClass().getSimpleName(), spec);
         return courseRepository.findAll(spec, pageable);
+    }
+
+    @Override
+    public Page<User> findAllUsersByCourse(final Specification<User> spec, final Pageable pageable) {
+        log.info("{}::findAllUsersByCourse - Searching all users by course with spec: {}", getClass().getSimpleName(),
+                 spec);
+        return userRepository.findAll(spec, pageable);
+    }
+
+    @Override
+    public void existsByCourseAndUser(UUID courseId, UUID userId) {
+        var existsSubscription = courseRepository.existsByCourseAndUser(courseId, userId).equals(1L) ? true : false;
+        if (existsSubscription) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User already subscribed in course");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void saveSubscriptionUserInCourse(UUID courseId, UUID userId) {
+        courseRepository.saveCourseUser(courseId, userId);
     }
 
 }

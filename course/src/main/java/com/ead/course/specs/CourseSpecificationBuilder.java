@@ -3,9 +3,9 @@ package com.ead.course.specs;
 import com.ead.course.enums.CourseLevel;
 import com.ead.course.enums.CourseStatus;
 import com.ead.course.models.Course;
-import com.ead.course.models.CourseUser;
-import com.ead.course.models.CourseUser_;
 import com.ead.course.models.Course_;
+import com.ead.course.models.User;
+import com.ead.course.models.User_;
 import jakarta.persistence.criteria.Join;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -35,7 +35,7 @@ public class CourseSpecificationBuilder {
         }
 
         if (nonNull(courseFilter.userId())) {
-            specification = specification.and(byCourseUserId(courseFilter.userId()));
+            specification = specification.and(byUserId(courseFilter.userId()));
         }
 
         return specification;
@@ -53,10 +53,10 @@ public class CourseSpecificationBuilder {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get(Course_.NAME), "%" + name + "%");
     }
 
-    private static Specification<Course> byCourseUserId(final UUID userId) {
+    private static Specification<Course> byUserId(final UUID userId) {
         return (root, query, criteriaBuilder) -> {
-            Join<Course, CourseUser> courseUsers = root.join(Course_.COURSES_USERS);
-            return criteriaBuilder.equal(courseUsers.get(CourseUser_.USER_ID), userId);
+            Join<Course, User> users = root.join(Course_.USERS);
+            return criteriaBuilder.equal(users.get(User_.USER_ID), userId);
         };
     }
 

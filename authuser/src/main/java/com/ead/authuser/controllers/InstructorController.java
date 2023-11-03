@@ -21,7 +21,7 @@ public class InstructorController {
     public ResponseEntity<Object> saveSubscriptionInstructor(@RequestBody @Valid final InstructorDTO instructorDTO) {
         var user = userService.findById(instructorDTO.userId());
         userService.subscriptionInstructor(user);
-        user = userService.save(user);
+        user = userService.updateUser(user);
         return ResponseEntity.ok().body(user);
     }
 }

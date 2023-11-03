@@ -8,7 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Set;
 import java.util.UUID;
@@ -42,8 +44,8 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public Lesson findByModuleIdAndLessonId(final UUID moduleId, final UUID lessonId) {
-        return lessonRepository.findLessonByModuleIdAndLessonId(moduleId, lessonId).orElseThrow(() -> new RuntimeException(
-                "Lesson not found for this module"));
+        return lessonRepository.findLessonByModuleIdAndLessonId(moduleId, lessonId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                                                                                                  "Lesson not found for this module"));
     }
 
     @Override

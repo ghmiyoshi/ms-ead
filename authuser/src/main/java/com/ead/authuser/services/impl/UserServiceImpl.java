@@ -1,11 +1,10 @@
 package com.ead.authuser.services.impl;
 
-import com.ead.authuser.clients.CourseClient;
+import com.ead.authuser.dtos.UserEventDTO;
 import com.ead.authuser.dtos.UserRequestDTO;
 import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.User;
-import com.ead.authuser.models.UserCourse;
-import com.ead.authuser.repositories.UserCourseRepository;
+import com.ead.authuser.publisher.UserEventPubliser;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
 import lombok.AllArgsConstructor;
@@ -15,12 +14,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.UUID;
 
-import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
+import static com.ead.authuser.enums.ActionType.*;
 
 @Slf4j
 @Service
@@ -28,8 +27,7 @@ import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
-    private UserCourseRepository userCourseRepository;
-    private CourseClient courseClient;
+    private UserEventPubliser userEventPubliser;
 
     @Cacheable
     @Override
@@ -47,16 +45,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(final UUID userId) {
         var user = findById(userId);
-        List<UserCourse> userCourses = userCourseRepository.findAllByUserUserId(userId);
-        if (isNotEmpty(userCourses)) {
-            userCourseRepository.deleteAll(userCourses);
-            courseClient.deleteUserInCourse(userId);
-        }
         userRepository.delete(user);
+        log.info("{}::deleteById - user id: {}", getClass().getSimpleName(), userId);
     }
 
     @Override
     public User save(final User user) {
+        log.info("{}::save - user: {}", getClass().getSimpleName(), user);
         return userRepository.save(user);
     }
 
@@ -77,23 +72,61 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void subscriptionInstructor(final User user) {
+        log.info("{}::subscriptionInstructor - Subscription user for instructor: {}",
+                 getClass().getSimpleName(), user);
         user.setUserType(UserType.INSTRUCTOR);
     }
 
     @Override
     public void updateFullNameAndPhoneNumber(final User user, final UserRequestDTO userRequest) {
+        log.info("{}::updateFullNameAndPhoneNumber - Update full name and phone number",
+                 getClass().getSimpleName());
         user.setFullName(userRequest.fullName());
         user.setPhoneNumber(userRequest.phoneNumber());
     }
 
     @Override
     public void updatePassword(final User user, final UserRequestDTO userRequest) {
+        log.info("{}::updatePassword - Update password", getClass().getSimpleName());
         user.setPassword(userRequest.password());
     }
 
     @Override
     public void updateImageUrl(final User user, final String imageUrl) {
+        log.info("{}::updateImageUrl - Update image url", getClass().getSimpleName());
         user.setImageUrl(imageUrl);
+    }
+
+    @Transactional
+    @Override
+    public User saveUser(final User user) {
+        var userSaved = save(user);
+        userEventPubliser.publishUserEvent(UserEventDTO.from(userSaved, CREATE));
+        log.info("{}::saveUser - Send message for queue: {}", getClass().getSimpleName(), userSaved);
+        return userSaved;
+    }
+
+    @Override
+    public void deleteUser(UUID userId) {
+        deleteById(userId);
+        var userEvent = new UserEventDTO();
+        userEvent.setUserId(userId);
+        userEvent.setActionType(DELETE.name());
+        userEventPubliser.publishUserEvent(userEvent);
+    }
+
+    @Transactional
+    @Override
+    public User updateUser(User user) {
+        var userSaved = save(user);
+        userEventPubliser.publishUserEvent(UserEventDTO.from(userSaved, UPDATE));
+        log.info("{}::updateUser - Send message for queue: {}", getClass().getSimpleName(), userSaved);
+        return userSaved;
+    }
+
+    @Override
+    public User updatePasswordUser(User user) {
+        return save(user);
     }
 
 }

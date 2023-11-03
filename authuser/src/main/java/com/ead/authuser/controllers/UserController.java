@@ -35,10 +35,11 @@ public class UserController {
 
     @GetMapping
     @JsonView(UserResponseDTO.Response.UserGet.class)
-    public Page<UserResponseDTO> getAllUsers(@PageableDefault(page = 0, size = 10, sort = "userId",
-            direction = Sort.Direction.ASC) final Pageable pageable,
-                                             @RequestParam(required = false) final UUID courseId) {
-        final var userFilter = UserFilter.createFilter(null, null, null, courseId);
+    public Page<UserResponseDTO> getAllUsers(@PageableDefault(page = 0, size = 10, sort = "userId", direction =
+            Sort.Direction.ASC) final Pageable pageable, @RequestParam UserType userType,
+                                             @RequestParam UserStatus userStatus,
+                                             @RequestParam String email) {
+        final var userFilter = UserFilter.createFilter(userType, userStatus, email);
         return userRepository.findAll(toSpec(userFilter), pageable).map(UserResponseDTO::from);
     }
 
@@ -52,7 +53,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable final UUID userId) {
         log.info("{}::deleteUser - user id received: {}", getClass().getSimpleName(), userId);
-        userService.deleteById(userId);
+        userService.deleteUser(userId);
         log.info("{}::deleteUser - deleted user id {}", getClass().getSimpleName(), userId);
     }
 
@@ -64,7 +65,7 @@ public class UserController {
         log.info("{}::updateUser - received: {}", getClass().getSimpleName(), userRequest);
         var user = userService.findById(userId);
         userService.updateFullNameAndPhoneNumber(user, userRequest);
-        user = userService.save(user);
+        user = userService.saveUser(user);
         log.info("{}::updateUser - saved: {}", getClass().getSimpleName(), user);
         return UserResponseDTO.from(user);
     }
@@ -75,7 +76,7 @@ public class UserController {
                                  @JsonView(UserRequestDTO.Request.PasswordPut.class) final UserRequestDTO userRequest) {
         var user = userService.findById(userId);
         userService.updatePassword(user, userRequest);
-        userService.save(user);
+        userService.saveUser(user);
         return "Password updated successfully";
     }
 
@@ -85,7 +86,7 @@ public class UserController {
                               @JsonView(UserRequestDTO.Request.ImagePut.class) final UserRequestDTO userRequest) {
         var user = userService.findById(userId);
         userService.updateImageUrl(user, userRequest.imageUrl());
-        userService.save(user);
+        userService.updatePasswordUser(user);
         return "Image url updated successfully";
     }
 
@@ -93,9 +94,8 @@ public class UserController {
     @JsonView(UserResponseDTO.Response.UserGet.class)
     public List<UserResponseDTO> getUserSpecs(@RequestParam(required = false) final UserType userType,
                                               @RequestParam(required = false) final UserStatus userStatus,
-                                              @RequestParam(required = false) final String email,
-                                              @RequestParam(required = false) final UUID courseId) {
-        final var userFilter = UserFilter.createFilter(userType, userStatus, email, courseId);
+                                              @RequestParam(required = false) final String email) {
+        final var userFilter = UserFilter.createFilter(userType, userStatus, email);
         return userRepository.findAll(toSpec(userFilter))
                 .stream().map(UserResponseDTO::from).toList();
     }

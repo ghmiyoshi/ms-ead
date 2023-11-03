@@ -29,4 +29,12 @@ public interface UserService {
 
     void updateImageUrl(User user, String imageUrl);
 
+    User saveUser(User user);
+
+    void deleteUser(UUID userId);
+
+    User updateUser(User user);
+
+    User updatePasswordUser(User user);
+
 }

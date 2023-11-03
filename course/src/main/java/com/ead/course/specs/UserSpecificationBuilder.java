@@ -1,12 +1,13 @@
-package com.ead.authuser.specs;
+package com.ead.course.specs;
 
-import com.ead.authuser.enums.UserStatus;
-import com.ead.authuser.enums.UserType;
-import com.ead.authuser.models.User;
-import com.ead.authuser.models.User_;
+import com.ead.course.models.Course_;
+import com.ead.course.models.User;
+import com.ead.course.models.User_;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+
+import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 
@@ -29,19 +30,38 @@ public class UserSpecificationBuilder {
             specification = specification.and(byEmail(userFilter.email()));
         }
 
+        if (nonNull(userFilter.fullName())) {
+            specification = specification.and(byFullName(userFilter.fullName()));
+        }
+
+        if (nonNull(userFilter.courseId())) {
+            specification = specification.and(byCourseId(userFilter.courseId()));
+        }
+
         return specification;
     }
 
-    private static Specification<User> byUserType(final UserType userType) {
+    private static Specification<User> byUserType(final String userType) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User_.USER_TYPE), userType);
     }
 
-    private static Specification<User> byUserStatus(final UserStatus userStatus) {
+    private static Specification<User> byUserStatus(final String userStatus) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User_.USER_STATUS), userStatus);
     }
 
     private static Specification<User> byEmail(final String email) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get(User_.EMAIL), "%" + email + "%");
+    }
+
+    private static Specification<User> byFullName(final String fullName) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get(User_.FULL_NAME), "%" + fullName + "%");
+    }
+
+    private static Specification<User> byCourseId(final UUID courseId) {
+        return (root, query, criteriaBuilder) -> {
+            var courses = root.join(User_.COURSES);
+            return criteriaBuilder.equal(courses.get(Course_.COURSE_ID), courseId);
+        };
     }
 
 }
