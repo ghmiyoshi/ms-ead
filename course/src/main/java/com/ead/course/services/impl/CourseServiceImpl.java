@@ -104,6 +104,6 @@ public class CourseServiceImpl implements CourseService {
             log.warn("{}::saveSubscriptionUserInCourseAndSendNotification - Error sending notification!",
                      getClass().getSimpleName());
         }
-
     }
+    
 }

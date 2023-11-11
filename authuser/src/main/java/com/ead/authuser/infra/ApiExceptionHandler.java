@@ -1,5 +1,6 @@
 package com.ead.authuser.infra;
 
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
@@ -82,7 +83,13 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ProblemDetail handleHttpMessageNotReadableException(final HttpMessageNotReadableException exception) {
-        return buildProblemDetail(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid JSON body"));
+        var messageError = "Invalid JSON body";
+        if (exception.getCause() instanceof UnrecognizedPropertyException unrecognizedPropertyException) {
+            final var property = unrecognizedPropertyException.getPropertyName();
+            messageError = String.format("%s, property: %s", messageError, property);
+        }
+
+        return buildProblemDetail(new ResponseStatusException(HttpStatus.BAD_REQUEST, messageError));
     }
 
 }
