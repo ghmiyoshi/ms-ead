@@ -1,4 +1,4 @@
-package com.ead.authuser.publisher;
+package com.ead.authuser.publishers;
 
 import com.ead.authuser.dtos.UserEventDTO;
 import lombok.RequiredArgsConstructor;

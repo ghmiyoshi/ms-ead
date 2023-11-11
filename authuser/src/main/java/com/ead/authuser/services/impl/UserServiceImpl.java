@@ -4,7 +4,7 @@ import com.ead.authuser.dtos.UserEventDTO;
 import com.ead.authuser.dtos.UserRequestDTO;
 import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.User;
-import com.ead.authuser.publisher.UserEventPubliser;
+import com.ead.authuser.publishers.UserEventPubliser;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
 import lombok.AllArgsConstructor;

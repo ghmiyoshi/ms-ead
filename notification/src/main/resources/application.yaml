@@ -1,17 +1,19 @@
 server:
-  port: 0
+  port: 8084
+  servlet:
+    context-path: '/ead-notification/'
 
 spring:
   application:
-    name: ead-course
+    name: ead-notification
   config:
-    import: 'optional:configserver:' #endereco do config server, mas como estou usando o eureka nao precisa
+    import: 'optional:configserver:'
   cloud:
     config:
       discovery:
         service-id: ead-config-server
   datasource:
-    url: jdbc:mysql://localhost:3306/ead-course?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/ead-notification?useSSL=false&serverTimezone=UTC
     username: root
     password: root
   jpa:
@@ -25,26 +27,23 @@ spring:
     property-naming-strategy: SNAKE_CASE
     deserialization:
       fail-on-unknown-properties: true
-  #  mvc:
-  #    problemdetails:
-  #      enabled: true
   rabbitmq:
     host: localhost
     port: 5672
     username: guest
     password: guest
 
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-}]"
+
 ead:
-  api:
-    course:
-      url: http://ead-authuser
   broker:
     exchange:
-      userEventExchange: ead.userevent
       notificationCommandExchange: ead.notificationcommand
     queue:
-      userEventQueue:
-        name: ead.userevent.ms.course
+      notificationCommandQueue:
+        name: ead.notificationcommand.ms.notification
     key:
       notificationCommandKey: ms.notification
 
@@ -56,6 +55,9 @@ management:
           - refresh
           - health
 
-logging:
-  pattern:
-    level: "%5p [${spring.application.name:},%X{traceId:-}]"
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: 'http://localhost:8761/eureka'
+  instance:
+    hostname: localhost

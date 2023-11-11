@@ -1,4 +1,4 @@
-package com.ead.course.consumers;
+package com.ead.course.async.consumers;
 
 import com.ead.course.dtos.UserEventDTO;
 import com.ead.course.services.UserService;
@@ -26,7 +26,7 @@ public class UserConsumer {
     public void listenUserEvent(@Payload UserEventDTO userEventDTO) {
         log.info("{}::listenUserEvent - Start process message: {}", getClass().getSimpleName(), userEventDTO);
         userEventDTO.getActionType().execute(userService, userEventDTO);
-        log.info("{}::listenUserEvent - Finish process message: {}", getClass().getSimpleName(), userEventDTO);
+        log.info("{}::listenUserEvent - Finish process message", getClass().getSimpleName());
     }
 
 }

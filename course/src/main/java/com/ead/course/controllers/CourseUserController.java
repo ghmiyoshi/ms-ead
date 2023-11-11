@@ -41,13 +41,12 @@ public class CourseUserController {
     @PostMapping("/courses/{courseId}/users/subscription")
     public ResponseEntity<Object> saveSubscriptionUserInCourse(@PathVariable final UUID courseId,
                                                                @RequestBody @Valid final SubscriptionDTO subscriptionDTO) {
-        courseService.findCourseById(courseId);
-
+        var course = courseService.findCourseById(courseId);
         var user = userService.findById(subscriptionDTO.userId());
         userService.isBlocked(user);
 
         courseService.existsByCourseAndUser(courseId, subscriptionDTO.userId());
-        courseService.saveSubscriptionUserInCourse(courseId, user.getUserId());
+        courseService.saveSubscriptionUserInCourseAndSendNotification(course, user);
         return ResponseEntity.status(HttpStatus.CREATED).body("Subscription created");
     }
 

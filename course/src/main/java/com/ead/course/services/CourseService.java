@@ -24,4 +24,6 @@ public interface CourseService {
 
     void saveSubscriptionUserInCourse(UUID courseId, UUID userId);
 
+    void saveSubscriptionUserInCourseAndSendNotification(Course course, User user);
+
 }
