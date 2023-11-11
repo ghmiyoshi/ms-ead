@@ -4,6 +4,12 @@ server:
 spring:
   application:
     name: ead-course
+  config:
+    import: 'optional:configserver:' #endereco do config server, mas como estou usando o eureka nao precisa
+  cloud:
+    config:
+      discovery:
+        service-id: ead-config-server
   datasource:
     url: jdbc:mysql://localhost:3306/ead-course?useSSL=false&serverTimezone=UTC
     username: root
@@ -35,17 +41,20 @@ ead:
   broker:
     exchange:
       userEventExchange: ead.userevent
+      notificationCommandExchange: ead.notificationcommand
     queue:
       userEventQueue:
         name: ead.userevent.ms.course
+    key:
+      notificationCommandKey: ms.notification
 
-eureka:
-  instance:
-    instance-id:
-      ${spring.application.name}:${random.int}
-  client:
-    service-url:
-      default-zone: http://localhost:8761/eureka
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - refresh
+          - health
 
 logging:
   pattern:

@@ -1,5 +1,7 @@
 package com.ead.course.services.impl;
 
+import com.ead.course.async.publishers.NotificationCommandPublisher;
+import com.ead.course.dtos.NotificationCommandDTO;
 import com.ead.course.models.Course;
 import com.ead.course.models.User;
 import com.ead.course.repositories.CourseRepository;
@@ -28,6 +30,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
     private final ModuleService moduleService;
+    private final NotificationCommandPublisher notificationCommandPublisher;
 
     @Transactional
     @Override
@@ -68,6 +71,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void existsByCourseAndUser(UUID courseId, UUID userId) {
+        log.info("{}::existsByCourseAndUser - Course id: {} and user id: {}", getClass().getSimpleName(), courseId,
+                 userId);
         var existsSubscription = courseRepository.existsByCourseAndUser(courseId, userId).equals(1L) ? true : false;
         if (existsSubscription) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already subscribed in course");
@@ -78,6 +83,27 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void saveSubscriptionUserInCourse(UUID courseId, UUID userId) {
         courseRepository.saveCourseUser(courseId, userId);
+        log.info("{}::saveSubscriptionUserInCourse - Course id: {} and user id: {}", getClass().getSimpleName(),
+                 courseId,
+                 userId);
     }
 
+    @Transactional
+    @Override
+    public void saveSubscriptionUserInCourseAndSendNotification(final Course course, final User user) {
+        courseRepository.saveCourseUser(course.getCourseId(), user.getUserId());
+        log.info("{}::saveSubscriptionUserInCourseAndSendNotification - Course id: {} and user id: {}",
+                 getClass().getSimpleName(), course.getCourseId(), user.getUserId());
+        try {
+            var notificationCommandDto = new NotificationCommandDTO("Bem-Vindo(a) ao Curso: " + course.getName(),
+                                                                    user.getFullName() + " a sua inscrição foi "
+                                                                            + "realizada com sucesso!",
+                                                                    user.getUserId());
+            notificationCommandPublisher.publishNotificationCommand(notificationCommandDto);
+        } catch (Exception e) {
+            log.warn("{}::saveSubscriptionUserInCourseAndSendNotification - Error sending notification!",
+                     getClass().getSimpleName());
+        }
+
+    }
 }

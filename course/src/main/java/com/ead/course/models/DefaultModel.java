@@ -1,5 +1,6 @@
 package com.ead.course.models;
 
+import com.ead.course.utils.ObjectMapperUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
@@ -22,5 +23,10 @@ public abstract class DefaultModel {
     @UpdateTimestamp
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private OffsetDateTime lastUpdateDate;
+
+    @Override
+    public String toString() {
+        return ObjectMapperUtils.writeObjectInJson(this);
+    }
 
 }
