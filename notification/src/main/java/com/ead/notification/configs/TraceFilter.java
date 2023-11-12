@@ -1,4 +1,4 @@
-package com.ead.course.configs;
+package com.ead.notification.configs;
 
 import io.micrometer.tracing.CurrentTraceContext;
 import io.micrometer.tracing.Tracer;

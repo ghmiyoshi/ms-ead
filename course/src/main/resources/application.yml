@@ -9,7 +9,7 @@ spring:
   cloud:
     config:
       discovery:
-        service-id: ead-config-server
+        service-id: configs-server
   datasource:
     url: jdbc:mysql://localhost:3306/ead-course?useSSL=false&serverTimezone=UTC
     username: root

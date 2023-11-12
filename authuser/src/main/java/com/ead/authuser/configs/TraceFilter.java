@@ -30,9 +30,9 @@ public class TraceFilter implements Filter {
                 chain.doFilter(req, res);
                 return;
             }
-            var context = tracer.currentTraceContext().context();
-            var traceId = context.traceId();
-            response.setHeader(REQUEST_ID_HEADER_NAME, traceId);
+//            var context = tracer.currentTraceContext().context();
+//            var traceId = context.traceId();
+//            response.setHeader(REQUEST_ID_HEADER_NAME, traceId);
             response.setHeader(APPLICATION_HEADER_NAME, appName);
         }
         chain.doFilter(req, res);

@@ -1,8 +1,3 @@
-#server:
-#  port: 8084
-#  servlet:
-#    context-path: '/ead-notification/'
-
 spring:
   application:
     name: ead-notification
@@ -11,46 +6,4 @@ spring:
   cloud:
     config:
       discovery:
-        service-id: ead-config-server
-#  datasource:
-#    url: jdbc:mysql://localhost:3306/ead-notification?useSSL=false&serverTimezone=UTC
-#    username: root
-#    password: root
-#  jpa:
-#    hibernate:
-#      ddl-auto: update
-#    show-sql: true
-#  jackson:
-#    mapper:
-#      DEFAULT_VIEW_INCLUSION: true
-#    default-property-inclusion: non_null
-#    property-naming-strategy: SNAKE_CASE
-#    deserialization:
-#      fail-on-unknown-properties: true
-#  rabbitmq:
-#    host: localhost
-#    port: 5672
-#    username: guest
-#    password: guest
-#
-#logging:
-#  pattern:
-#    level: "%5p [${spring.application.name:},%X{traceId:-}]"
-#
-#ead:
-#  broker:
-#    exchange:
-#      notificationCommandExchange: ead.notificationcommand
-#    queue:
-#      notificationCommandQueue:
-#        name: ead.notificationcommand.ms.notification
-#    key:
-#      notificationCommandKey: ms.notification
-#
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include:
-#          - refresh
-#          - health
+        service-id: configs-server
