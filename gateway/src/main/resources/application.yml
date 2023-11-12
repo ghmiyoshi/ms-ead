@@ -27,6 +27,12 @@ spring:
             - Path=/ms-ead/authuser/**
           filters:
             - RewritePath=/ms-ead/authuser(?<segment>/?.*), $\{segment}
+        - id: ead-notification
+          uri: lb://EAD-NOTIFICATION
+          predicates:
+            - Path=/ms-ead/notification/**
+          filters:
+            - RewritePath=/ms-ead/notification(?<segment>/?.*), $\{segment}
 
 logging:
   level:

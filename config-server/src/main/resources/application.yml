@@ -10,5 +10,5 @@ spring:
         git:
           uri: https://github.com/ghmiyoshi/configs-server-yml
           default-label: main
-          username: GITHUB_USERNAMEE
-          password: GITHUB_PASSWORD
+          username: ${GITHUB_USERNAME}
+          password: ${GITHUB_PASSWORD}
