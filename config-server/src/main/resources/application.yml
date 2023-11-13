@@ -13,6 +13,11 @@ spring:
           username: ${GITHUB_USERNAME}
           password: ${GITHUB_PASSWORD}
 
+ead:
+  config-server:
+    username: guestcs
+    password: guestcs
+
 eureka:
   client:
     service-url:
