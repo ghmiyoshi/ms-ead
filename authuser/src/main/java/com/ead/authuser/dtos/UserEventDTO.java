@@ -1,7 +1,7 @@
 package com.ead.authuser.dtos;
 
-import com.ead.authuser.enums.ActionType;
 import com.ead.authuser.models.User;
+import com.ead.authuser.models.enums.ActionType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

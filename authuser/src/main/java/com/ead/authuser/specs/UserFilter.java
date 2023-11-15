@@ -1,7 +1,7 @@
 package com.ead.authuser.specs;
 
-import com.ead.authuser.enums.UserStatus;
-import com.ead.authuser.enums.UserType;
+import com.ead.authuser.models.enums.UserStatus;
+import com.ead.authuser.models.enums.UserType;
 import lombok.Builder;
 
 @Builder

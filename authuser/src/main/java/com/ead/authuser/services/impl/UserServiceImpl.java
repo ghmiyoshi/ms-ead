@@ -2,24 +2,28 @@ package com.ead.authuser.services.impl;
 
 import com.ead.authuser.dtos.UserEventDTO;
 import com.ead.authuser.dtos.UserRequestDTO;
-import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.User;
+import com.ead.authuser.models.enums.RoleType;
+import com.ead.authuser.models.enums.UserType;
 import com.ead.authuser.publishers.UserEventPubliser;
 import com.ead.authuser.repositories.UserRepository;
+import com.ead.authuser.services.RoleService;
 import com.ead.authuser.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
-import static com.ead.authuser.enums.ActionType.*;
+import static com.ead.authuser.models.enums.ActionType.*;
 
 @Slf4j
 @Service
@@ -28,6 +32,8 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private UserEventPubliser userEventPubliser;
+    private RoleService roleService;
+    private PasswordEncoder passwordEncoder;
 
     @Cacheable
     @Override
@@ -59,14 +65,17 @@ public class UserServiceImpl implements UserService {
     public void validateUser(final UserRequestDTO userRequest) {
         if (userRepository.existsUserByUsernameOrEmail(userRequest.username(), userRequest.email())) {
             log.error("{}::validateUser - User is already taken", getClass().getSimpleName());
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is already taken");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is already taken");
         }
     }
 
     @Override
-    public User newStudent() {
+    public User newStudent(UserRequestDTO userRequest) {
         var user = new User();
         user.setUserType(UserType.STUDENT);
+        user.getRoles().add(roleService.findByRoleName(RoleType.STUDENT));
+        user.setPassword(passwordEncoder.encode(userRequest.password()));
+        BeanUtils.copyProperties(userRequest, user, "password");
         return user;
     }
 

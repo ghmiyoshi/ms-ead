@@ -1,8 +1,8 @@
 package com.ead.authuser.dtos;
 
-import com.ead.authuser.enums.UserStatus;
-import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.User;
+import com.ead.authuser.models.enums.UserStatus;
+import com.ead.authuser.models.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonView;
 
 public record UserResponseDTO(

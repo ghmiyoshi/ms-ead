@@ -6,7 +6,6 @@ import com.ead.authuser.services.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +26,7 @@ public class AuthenticationController {
                                         @JsonView(UserRequestDTO.Request.RegistrationPost.class) final UserRequestDTO userRequest) {
         log.debug("{}::registerUSer - received: {}", getClass().getSimpleName(), userRequest);
         userService.validateUser(userRequest);
-        var user = userService.newStudent();
-        BeanUtils.copyProperties(userRequest, user);
+        var user = userService.newStudent(userRequest);
         userService.saveUser(user);
         log.debug("{}::registerUSer - saved: {}", getClass().getSimpleName(), user);
         return UserResponseDTO.from(user);

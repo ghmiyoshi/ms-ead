@@ -19,7 +19,7 @@ public interface UserService {
 
     void validateUser(UserRequestDTO userRequest);
 
-    User newStudent();
+    User newStudent(UserRequestDTO userRequest);
 
     void subscriptionInstructor(User user);
 

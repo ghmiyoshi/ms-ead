@@ -2,8 +2,8 @@ package com.ead.authuser.controllers;
 
 import com.ead.authuser.dtos.UserRequestDTO;
 import com.ead.authuser.dtos.UserResponseDTO;
-import com.ead.authuser.enums.UserStatus;
-import com.ead.authuser.enums.UserType;
+import com.ead.authuser.models.enums.UserStatus;
+import com.ead.authuser.models.enums.UserType;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
 import com.ead.authuser.specs.UserFilter;

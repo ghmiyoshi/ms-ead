@@ -1,9 +1,9 @@
 package com.ead.authuser.specs;
 
-import com.ead.authuser.enums.UserStatus;
-import com.ead.authuser.enums.UserType;
 import com.ead.authuser.models.User;
 import com.ead.authuser.models.User_;
+import com.ead.authuser.models.enums.UserStatus;
+import com.ead.authuser.models.enums.UserType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
