@@ -3,7 +3,6 @@ package com.ead.authuser.services.impl;
 import com.ead.authuser.dtos.UserEventDTO;
 import com.ead.authuser.dtos.UserRequestDTO;
 import com.ead.authuser.models.User;
-import com.ead.authuser.models.enums.RoleType;
 import com.ead.authuser.models.enums.UserType;
 import com.ead.authuser.publishers.UserEventPubliser;
 import com.ead.authuser.repositories.UserRepository;
@@ -24,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.UUID;
 
 import static com.ead.authuser.models.enums.ActionType.*;
+import static com.ead.authuser.models.enums.RoleType.ROLE_STUDENT;
 
 @Slf4j
 @Service
@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
     @Cacheable
     @Override
     public Page<User> findAll(final Pageable pageable) {
+        log.info("{}::findAll - Find all users");
         return userRepository.findAll(pageable);
     }
 
@@ -73,7 +74,7 @@ public class UserServiceImpl implements UserService {
     public User newStudent(UserRequestDTO userRequest) {
         var user = new User();
         user.setUserType(UserType.STUDENT);
-        user.getRoles().add(roleService.findByRoleName(RoleType.STUDENT));
+        user.getRoles().add(roleService.findByRoleName(ROLE_STUDENT));
         user.setPassword(passwordEncoder.encode(userRequest.password()));
         BeanUtils.copyProperties(userRequest, user, "password");
         return user;

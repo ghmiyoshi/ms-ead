@@ -2,9 +2,9 @@ package com.ead.authuser.models.enums;
 
 public enum RoleType {
 
-    STUDENT,
-    INSTRUCTOR,
-    ADMIN,
-    USER;
+    ROLE_STUDENT,
+    ROLE_INSTRUCTOR,
+    ROLE_ADMIN,
+    ROLE_USER;
 
 }
