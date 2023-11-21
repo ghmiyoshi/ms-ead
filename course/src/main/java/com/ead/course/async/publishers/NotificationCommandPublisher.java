@@ -1,6 +1,6 @@
 package com.ead.course.async.publishers;
 
-import com.ead.course.dtos.NotificationCommandDTO;
+import com.ead.course.dtos.NotificationCommandDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -12,18 +12,18 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class NotificationCommandPublisher {
 
-    private final RabbitTemplate rabbitTemplate;
+  private final RabbitTemplate rabbitTemplate;
 
-    @Value(value = "${ead.broker.exchange.notificationCommandExchange}")
-    private String notificationCommandExchange;
+  @Value(value = "${ead.broker.exchange.notificationCommandExchange}")
+  private String notificationCommandExchange;
 
-    @Value(value = "${ead.broker.key.notificationCommandKey}")
-    private String notificationCommandKey;
+  @Value(value = "${ead.broker.key.notificationCommandKey}")
+  private String notificationCommandKey;
 
-    public void publishNotificationCommand(final NotificationCommandDTO notificationCommand) {
-        log.info("{}::publishNotificationCommand - Publish notification message: {}",
-                 getClass().getSimpleName(), notificationCommand);
-        rabbitTemplate.convertAndSend(notificationCommandExchange, notificationCommandKey, notificationCommand);
-    }
-
+  public void publishNotificationCommand(final NotificationCommandDto notificationCommandDto) {
+    log.info("{}::publishNotificationCommand - Publish notification message: {}",
+        getClass().getSimpleName(), notificationCommandDto);
+    rabbitTemplate.convertAndSend(notificationCommandExchange, notificationCommandKey,
+        notificationCommandDto);
+  }
 }

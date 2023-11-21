@@ -1,10 +1,10 @@
 package com.ead.authuser.controllers;
 
 import com.ead.authuser.configs.JwtProvider;
-import com.ead.authuser.dtos.JwtDTO;
-import com.ead.authuser.dtos.LoginDTO;
-import com.ead.authuser.dtos.UserRequestDTO;
-import com.ead.authuser.dtos.UserResponseDTO;
+import com.ead.authuser.dtos.JwtDto;
+import com.ead.authuser.dtos.LoginDto;
+import com.ead.authuser.dtos.UserRequestDto;
+import com.ead.authuser.dtos.UserResponseDto;
 import com.ead.authuser.models.UserDetailsImpl;
 import com.ead.authuser.services.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -16,7 +16,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -25,29 +30,30 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthenticationController {
 
-    private UserService userService;
-    private JwtProvider jwtProvider;
-    private AuthenticationManager authenticationManager;
+  private UserService userService;
+  private JwtProvider jwtProvider;
+  private AuthenticationManager authenticationManager;
 
-    @PostMapping("/signup")
-    @JsonView(UserResponseDTO.Response.RegistrationPost.class)
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserResponseDTO registerUSer(@RequestBody @Validated(UserRequestDTO.Request.RegistrationPost.class)
-                                        @JsonView(UserRequestDTO.Request.RegistrationPost.class) final UserRequestDTO userRequest) {
-        log.debug("{}::registerUSer - received: {}", getClass().getSimpleName(), userRequest);
-        userService.validateUser(userRequest);
-        var user = userService.newStudent(userRequest);
-        userService.saveUser(user);
-        log.debug("{}::registerUSer - saved: {}", getClass().getSimpleName(), user);
-        return UserResponseDTO.from(user);
-    }
+  @PostMapping("/signup")
+  @JsonView(UserResponseDto.Response.RegistrationPost.class)
+  @ResponseStatus(HttpStatus.CREATED)
+  public UserResponseDto registerUser(
+      @RequestBody @Validated(UserRequestDto.Request.RegistrationPost.class)
+      @JsonView(UserRequestDto.Request.RegistrationPost.class) final UserRequestDto userRequest) {
+    log.debug("{}::registerUSer - received: {}", getClass().getSimpleName(), userRequest);
+    userService.validateUser(userRequest);
+    var user = userService.newStudent(userRequest);
+    userService.saveUser(user);
+    log.debug("{}::registerUSer - saved: {}", getClass().getSimpleName(), user);
+    return UserResponseDto.from(user);
+  }
 
-    @PostMapping("/login")
-    public JwtDTO authenticationUser(@Valid @RequestBody LoginDTO loginDTO) {
-        final var authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDTO.username(), loginDTO.password()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        final var jwt = jwtProvider.generateToken((UserDetailsImpl) authentication.getPrincipal());
-        return new JwtDTO(jwt, "Bearer");
-    }
+  @PostMapping("/login")
+  public JwtDto authenticationUser(@Valid @RequestBody LoginDto loginDto) {
+    final var authentication = authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(loginDto.username(), loginDto.password()));
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    final var jwt = jwtProvider.generateToken((UserDetailsImpl) authentication.getPrincipal());
+    return new JwtDto(jwt, "Bearer");
+  }
 }

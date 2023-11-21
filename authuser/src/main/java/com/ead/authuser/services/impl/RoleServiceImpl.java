@@ -15,12 +15,11 @@ import org.springframework.web.server.ResponseStatusException;
 @AllArgsConstructor
 public class RoleServiceImpl implements RoleService {
 
-    private RoleRepository roleRepository;
+  private RoleRepository roleRepository;
 
-    @Override
-    public Role findByRoleName(RoleType name) {
-        return roleRepository.findByName(name)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"));
-    }
-
+  @Override
+  public Role findByRoleName(RoleType name) {
+    return roleRepository.findByName(name).orElseThrow(
+        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"));
+  }
 }

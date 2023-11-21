@@ -12,25 +12,24 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMqConfig {
 
-    @Value("${ead.broker.exchange.userEvent}")
-    private String exchangeUserEvent;
+  @Value("${ead.broker.exchange.userEvent}")
+  private String exchangeUserEvent;
 
-    @Bean
-    public RabbitTemplate criaRabbitTemplate(final ConnectionFactory connectionFactory,
-                                             final Jackson2JsonMessageConverter messageConverter) {
-        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(messageConverter);
-        return rabbitTemplate;
-    }
+  @Bean
+  public RabbitTemplate criaRabbitTemplate(final ConnectionFactory connectionFactory,
+      final Jackson2JsonMessageConverter messageConverter) {
+    RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+    rabbitTemplate.setMessageConverter(messageConverter);
+    return rabbitTemplate;
+  }
 
-    @Bean
-    public Jackson2JsonMessageConverter converteMensagem() {
-        return new Jackson2JsonMessageConverter(ObjectMapperUtils.objectMapper());
-    }
+  @Bean
+  public Jackson2JsonMessageConverter converteMensagem() {
+    return new Jackson2JsonMessageConverter(ObjectMapperUtils.objectMapper());
+  }
 
-    @Bean
-    public FanoutExchange fanoutUserEvent() {
-        return new FanoutExchange(exchangeUserEvent);
-    }
-
+  @Bean
+  public FanoutExchange fanoutUserEvent() {
+    return new FanoutExchange(exchangeUserEvent);
+  }
 }

@@ -13,30 +13,29 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class WebSecurityConfig {
 
-    @Value("${ead.config-server.username}")
-    private String username;
+  @Value("${ead.config-server.username}")
+  private String username;
 
-    @Value("${ead.config-server.password}")
-    private String password;
+  @Value("${ead.config-server.password}")
+  private String password;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
-                .formLogin(Customizer.withDefaults())
-                .build();
-    }
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    return httpSecurity
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
+        .httpBasic(Customizer.withDefaults())
+        .formLogin(Customizer.withDefaults())
+        .build();
+  }
 
-    @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username(username)
-                .password(password)
-                .roles("ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(user);
-    }
-
+  @Bean
+  public InMemoryUserDetailsManager userDetailsService() {
+    UserDetails user = User.withDefaultPasswordEncoder()
+        .username(username)
+        .password(password)
+        .roles("ADMIN")
+        .build();
+    return new InMemoryUserDetailsManager(user);
+  }
 }

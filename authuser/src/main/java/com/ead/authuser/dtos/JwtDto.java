@@ -1,5 +1,6 @@
 package com.ead.authuser.dtos;
 
-public record JwtDTO(String token,
+public record JwtDto(String token,
                      String type) {
+
 }
