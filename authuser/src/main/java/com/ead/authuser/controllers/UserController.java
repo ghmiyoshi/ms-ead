@@ -62,9 +62,9 @@ public class UserController {
   @DeleteMapping("/{userId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteUser(@PathVariable final UUID userId) {
-    log.info("{}::deleteUser - user id received: {}", getClass().getSimpleName(), userId);
+    log.info("[method:deleteUser] userId: {}", userId);
     userService.deleteUser(userId);
-    log.info("{}::deleteUser - deleted user id {}", getClass().getSimpleName(), userId);
+    log.info("[method:deleteUser] userId: {}", userId);
   }
 
   @PutMapping("/{userId}")
@@ -72,11 +72,11 @@ public class UserController {
   public UserResponseDto updateUser(@PathVariable final UUID userId,
       @RequestBody @Validated(UserRequestDto.Request.UserPut.class)
       @JsonView(UserRequestDto.Request.UserPut.class) final UserRequestDto userRequest) {
-    log.info("{}::updateUser - received: {}", getClass().getSimpleName(), userRequest);
+    log.info("[method:updateUser] userRequest: {}", userRequest);
     var user = userService.findById(userId);
     userService.updateFullNameAndPhoneNumber(user, userRequest);
     user = userService.saveUser(user);
-    log.info("{}::updateUser - saved: {}", getClass().getSimpleName(), user);
+    log.info("[method:updateUser] user: {}", user);
     return UserResponseDto.from(user);
   }
 

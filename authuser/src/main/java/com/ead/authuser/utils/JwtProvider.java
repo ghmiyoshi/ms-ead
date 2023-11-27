@@ -1,4 +1,4 @@
-package com.ead.authuser.configs;
+package com.ead.authuser.utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -26,7 +26,7 @@ public class JwtProvider {
   private int jwtExpirationMs;
 
   public String generateToken(final UserDetailsImpl userDetails) {
-    log.info("{}::generateToken - Generate token", getClass().getSimpleName());
+    log.info("[method:generateToken] Generate token");
     try {
       return JWT.create()
           .withSubject(userDetails.getUsername())
@@ -34,6 +34,7 @@ public class JwtProvider {
           .withExpiresAt(expirationDate())
           .sign(Algorithm.HMAC256(jtwSecret));
     } catch (JWTCreationException exception) {
+      log.error("[method:generateToken] Error generate token jwt: {}", exception.getMessage());
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error generate token jwt",
           exception);
     }
@@ -41,5 +42,26 @@ public class JwtProvider {
 
   private Instant expirationDate() {
     return LocalDateTime.now().atZone(ZoneId.of(ZONE_ID)).toInstant().plusMillis(jwtExpirationMs);
+  }
+
+  public String getUserNameFromJwtToken(final String token) {
+    log.info("[method:getUserNameFromJwtToken] Get username from token");
+    return JWT.require(Algorithm.HMAC256(jtwSecret))
+        .build()
+        .verify(token)
+        .getSubject();
+  }
+
+  public boolean validateJwtToken(final String authToken) {
+    log.info("[method:validateJwtToken] Validate token");
+    try {
+      JWT.require(Algorithm.HMAC256(jtwSecret))
+          .build()
+          .verify(authToken);
+      return true;
+    } catch (Exception e) {
+      log.error("[method:validateJwtToken] Invalid token: {}", e.getMessage());
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token");
+    }
   }
 }

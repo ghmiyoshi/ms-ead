@@ -39,13 +39,13 @@ public class UserServiceImpl implements UserService {
   @Cacheable
   @Override
   public Page<User> findAll(final Pageable pageable) {
-    log.info("{}::findAll - Find all users");
+    log.info("[method:findAll] Find all users");
     return userRepository.findAll(pageable);
   }
 
   @Override
   public User findById(final UUID userId) {
-    log.info("{}::findById - user id: {}", getClass().getSimpleName(), userId);
+    log.info("[method:findById] userId: {}", userId);
     return userRepository.findById(userId)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
   }
@@ -54,19 +54,19 @@ public class UserServiceImpl implements UserService {
   public void deleteById(final UUID userId) {
     var user = findById(userId);
     userRepository.delete(user);
-    log.info("{}::deleteById - user id: {}", getClass().getSimpleName(), userId);
+    log.info("[method:deleteById] userId: {}", userId);
   }
 
   @Override
   public User save(final User user) {
-    log.info("{}::save - user: {}", getClass().getSimpleName(), user);
+    log.info("[method:save] user: {}", user);
     return userRepository.save(user);
   }
 
   @Override
   public void validateUser(final UserRequestDto userRequest) {
     if (userRepository.existsUserByUsernameOrEmail(userRequest.username(), userRequest.email())) {
-      log.error("{}::validateUser - User is already taken", getClass().getSimpleName());
+      log.error("[method:validateUser] User is already taken");
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is already taken");
     }
   }
@@ -83,28 +83,26 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void subscriptionInstructor(final User user) {
-    log.info("{}::subscriptionInstructor - Subscription user for instructor: {}",
-        getClass().getSimpleName(), user);
+    log.info("[method:subscriptionInstructor] Subscription user for instructor: {}", user);
     user.setUserType(UserType.INSTRUCTOR);
   }
 
   @Override
   public void updateFullNameAndPhoneNumber(final User user, final UserRequestDto userRequest) {
-    log.info("{}::updateFullNameAndPhoneNumber - Update full name and phone number",
-        getClass().getSimpleName());
+    log.info("[method:updateFullNameAndPhoneNumber] Update full name and phone number");
     user.setFullName(userRequest.fullName());
     user.setPhoneNumber(userRequest.phoneNumber());
   }
 
   @Override
   public void updatePassword(final User user, final UserRequestDto userRequest) {
-    log.info("{}::updatePassword - Update password", getClass().getSimpleName());
+    log.info("[method:updatePassword] Update password");
     user.setPassword(userRequest.password());
   }
 
   @Override
   public void updateImageUrl(final User user, final String imageUrl) {
-    log.info("{}::updateImageUrl - Update image url", getClass().getSimpleName());
+    log.info("[method:updateImageUrl] Update image url");
     user.setImageUrl(imageUrl);
   }
 
@@ -113,7 +111,7 @@ public class UserServiceImpl implements UserService {
   public User saveUser(final User user) {
     var userSaved = save(user);
     userEventPubliser.publishUserEvent(UserEventDto.from(userSaved, CREATE));
-    log.info("{}::saveUser - Send message for queue: {}", getClass().getSimpleName(), userSaved);
+    log.info("[method:saveUser] Send message for queue: {}", userSaved);
     return userSaved;
   }
 
@@ -131,7 +129,7 @@ public class UserServiceImpl implements UserService {
   public User updateUser(User user) {
     var userSaved = save(user);
     userEventPubliser.publishUserEvent(UserEventDto.from(userSaved, UPDATE));
-    log.info("{}::updateUser - Send message for queue: {}", getClass().getSimpleName(), userSaved);
+    log.info("[method:updateUser] Send message for queue: {}", userSaved);
     return userSaved;
   }
 

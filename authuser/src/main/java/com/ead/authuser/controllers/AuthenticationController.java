@@ -1,12 +1,12 @@
 package com.ead.authuser.controllers;
 
-import com.ead.authuser.configs.JwtProvider;
 import com.ead.authuser.dtos.JwtDto;
 import com.ead.authuser.dtos.LoginDto;
 import com.ead.authuser.dtos.UserRequestDto;
 import com.ead.authuser.dtos.UserResponseDto;
 import com.ead.authuser.models.UserDetailsImpl;
 import com.ead.authuser.services.UserService;
+import com.ead.authuser.utils.JwtProvider;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -40,11 +40,11 @@ public class AuthenticationController {
   public UserResponseDto registerUser(
       @RequestBody @Validated(UserRequestDto.Request.RegistrationPost.class)
       @JsonView(UserRequestDto.Request.RegistrationPost.class) final UserRequestDto userRequest) {
-    log.debug("{}::registerUSer - received: {}", getClass().getSimpleName(), userRequest);
+    log.debug("[method:registerUser] userRequest: {}", userRequest);
     userService.validateUser(userRequest);
     var user = userService.newStudent(userRequest);
     userService.saveUser(user);
-    log.debug("{}::registerUSer - saved: {}", getClass().getSimpleName(), user);
+    log.debug("[method:registerUser] saved: {}", user);
     return UserResponseDto.from(user);
   }
 

@@ -25,9 +25,9 @@ public class CourseClient {
   // @Retry(name = "retryInstance", fallbackMethod = "getAllCoursesFallback")
   @CircuitBreaker(name = "circuitbreakerInstance", fallbackMethod = "getAllCoursesFallback")
   public Page<CourseDto> getAllCoursesByUser(final Pageable pageable, final UUID userId) {
-    log.info("{}::getAllCoursesByUser - user id received: {}", getClass().getSimpleName(), userId);
+    log.info("[method:getAllCoursesByUser] userId: {}", userId);
     final var url = utilsService.createUrl(userId, pageable);
-    log.info("{}::getAllCoursesByUser - Request URL: {} ", getClass().getSimpleName(), url);
+    log.info("[method:getAllCoursesByUser] url: {} ", url);
     ParameterizedTypeReference<ResponsePageDto<CourseDto>> responseType =
         new ParameterizedTypeReference<>() {
         };
@@ -37,8 +37,7 @@ public class CourseClient {
   public Page<CourseDto> getAllCoursesFallback(final Pageable pageable,
       final UUID userId,
       final Throwable throwable) {
-    log.error("{}::getAllCoursesFallback - Inside retry fallback, cause {}",
-        getClass().getSimpleName(),
+    log.error("[method:getAllCoursesFallback] Inside retry fallback, cause {}",
         throwable.getMessage());
     return Page.empty();
   }
