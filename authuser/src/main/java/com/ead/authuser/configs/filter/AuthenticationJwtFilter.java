@@ -1,5 +1,7 @@
 package com.ead.authuser.configs.filter;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import com.ead.authuser.services.impl.UserDetailsServiceImpl;
 import com.ead.authuser.utils.JwtProvider;
 import jakarta.servlet.FilterChain;
@@ -10,11 +12,9 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.server.ResponseStatusException;
 
 @Component
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class AuthenticationJwtFilter extends OncePerRequestFilter {
       FilterChain filterChain) throws ServletException, IOException {
     try {
       var jwt = getJwt(request);
-      if (jwtProvider.validateJwtToken(jwt)) {
+      if (isNotBlank(jwt) && jwtProvider.validateJwtToken(jwt)) {
         var username = jwtProvider.getUserNameFromJwtToken(jwt);
         var userDetails = userDetailsService.loadUserByUsername(username);
         var authentication = userDetailsService.getAuthentication(userDetails);
@@ -38,7 +38,6 @@ public class AuthenticationJwtFilter extends OncePerRequestFilter {
       }
     } catch (Exception e) {
       log.error("[method:doFilterInternal] Cannot set user authentication: {}", e.getMessage());
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
     filterChain.doFilter(request, response);
   }
@@ -49,7 +48,6 @@ public class AuthenticationJwtFilter extends OncePerRequestFilter {
     if (StringUtils.isNotEmpty(authHeader) && authHeader.startsWith("Bearer ")) {
       return authHeader.substring(7, authHeader.length());
     }
-    log.error("[method:getJwt] Token is not present");
-    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token is not present");
+    return StringUtils.EMPTY;
   }
 }

@@ -8,6 +8,7 @@ import com.ead.authuser.models.enums.UserStatus;
 import com.ead.authuser.models.enums.UserType;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
+import com.ead.authuser.services.impl.AuthenticationCurrentUserService;
 import com.ead.authuser.specs.UserFilter;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.util.List;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,7 +43,9 @@ public class UserController {
 
   private UserService userService;
   private UserRepository userRepository;
+  private AuthenticationCurrentUserService authenticationCurrentUserService;
 
+  @PreAuthorize("hasAnyRole('GUEST', 'ADMIN')")
   @GetMapping
   @JsonView(UserResponseDto.Response.UserGet.class)
   public Page<UserResponseDto> getAllUsers(
@@ -56,7 +61,11 @@ public class UserController {
   @GetMapping("/{userId}")
   @JsonView(UserResponseDto.Response.UserGet.class)
   public UserResponseDto getOneUser(@PathVariable final UUID userId) {
-    return UserResponseDto.from(userService.findById(userId));
+    final var userDetails = authenticationCurrentUserService.getUserDetailsService();
+    if (userId.equals(userDetails.getUserId()) || userDetails.isAdmin()) {
+      return UserResponseDto.from(userService.findById(userId));
+    }
+    throw new AccessDeniedException("Forbidden");
   }
 
   @DeleteMapping("/{userId}")

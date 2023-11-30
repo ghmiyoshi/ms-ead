@@ -66,4 +66,9 @@ public class UserDetailsImpl implements UserDetails {
   public boolean isEnabled() {
     return true;
   }
+
+  public boolean isAdmin() {
+    return this.authorities.stream()
+        .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+  }
 }
