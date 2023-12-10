@@ -1,6 +1,12 @@
 package com.ead.notification.infra;
 
+import static java.util.Objects.nonNull;
+
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
@@ -12,13 +18,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Objects.nonNull;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -91,5 +90,4 @@ public class ApiExceptionHandler {
 
         return buildProblemDetail(new ResponseStatusException(HttpStatus.BAD_REQUEST, messageError));
     }
-
 }

@@ -1,8 +1,11 @@
 package com.ead.notification.service.impl;
 
+import static com.ead.notification.model.NotificationStatusEnum.CREATED;
+
 import com.ead.notification.model.Notification;
 import com.ead.notification.repository.NotificationRepository;
 import com.ead.notification.service.NotificationService;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -10,10 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.UUID;
-
-import static com.ead.notification.model.NotificationStatusEnum.CREATED;
 
 @Slf4j
 @Service
@@ -42,5 +41,4 @@ public class NotificationServiceImpl implements NotificationService {
         return notificationRepository.findByNotificationIdAndUserId(notificationId, userId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Notification not found"));
     }
-
 }

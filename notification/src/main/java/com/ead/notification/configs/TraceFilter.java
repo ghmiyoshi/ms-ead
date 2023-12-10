@@ -2,14 +2,17 @@ package com.ead.notification.configs;
 
 import io.micrometer.tracing.CurrentTraceContext;
 import io.micrometer.tracing.Tracer;
-import jakarta.servlet.*;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
@@ -37,5 +40,4 @@ public class TraceFilter implements Filter {
         }
         chain.doFilter(req, res);
     }
-
 }

@@ -1,10 +1,8 @@
-package com.ead.authuser.configs.filter;
+package com.ead.notification.configs.security;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
-import com.ead.authuser.services.impl.UserDetailsServiceImpl;
-import com.ead.authuser.utils.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +11,9 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -23,7 +23,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class AuthenticationJwtFilter extends OncePerRequestFilter {
 
   private final JwtProvider jwtProvider;
-  private final UserDetailsServiceImpl userDetailsService;
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -32,9 +31,10 @@ public class AuthenticationJwtFilter extends OncePerRequestFilter {
       var jwt = getJwt(request);
       if (isNotBlank(jwt) && jwtProvider.validateJwtToken(jwt)) {
         var username = jwtProvider.getUserNameFromJwtToken(jwt);
-        var userDetails = userDetailsService.loadUserByUsername(username);
-        var authentication = userDetailsService.getAuthentication(userDetails);
-        authentication.setDetails(userDetails);
+        var roles = jwtProvider.getClaimNameJwt(jwt, "roles");
+        var userDetails = UserDetailsImpl.build(username, roles);
+        var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
     } catch (Exception e) {
@@ -47,6 +47,6 @@ public class AuthenticationJwtFilter extends OncePerRequestFilter {
     log.info("[method:getJwt] Getting jwt token from request");
     var authHeader = request.getHeader("Authorization");
     return isNotEmpty(authHeader) && authHeader.startsWith("Bearer ") ?
-        authHeader.substring(7, authHeader.length()) : StringUtils.EMPTY;
+      authHeader.substring(7, authHeader.length()) : StringUtils.EMPTY;
   }
 }

@@ -1,11 +1,10 @@
 package com.ead.notification.infra;
 
+import java.util.List;
 import lombok.Getter;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @Getter
 public class ValidationException extends ResponseStatusException {
@@ -16,5 +15,4 @@ public class ValidationException extends ResponseStatusException {
         super(status);
         this.errors = errors;
     }
-
 }
