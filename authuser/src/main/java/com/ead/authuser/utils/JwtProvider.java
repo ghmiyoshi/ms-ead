@@ -7,6 +7,7 @@ import com.ead.authuser.models.UserDetailsImpl;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -27,9 +28,12 @@ public class JwtProvider {
 
   public String generateToken(final UserDetailsImpl userDetails) {
     log.info("[method:generateToken] Generate token");
+    var roles = userDetails.getAuthorities().stream().map(role -> role.getAuthority())
+        .collect(Collectors.joining(","));
     try {
       return JWT.create()
           .withSubject(userDetails.getUsername())
+          .withClaim("roles", roles)
           .withIssuedAt(Instant.now())
           .withExpiresAt(expirationDate())
           .sign(Algorithm.HMAC256(jtwSecret));
