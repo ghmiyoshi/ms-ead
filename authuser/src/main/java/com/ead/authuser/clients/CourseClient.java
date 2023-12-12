@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -24,14 +26,18 @@ public class CourseClient {
 
   // @Retry(name = "retryInstance", fallbackMethod = "getAllCoursesFallback")
   @CircuitBreaker(name = "circuitbreakerInstance", fallbackMethod = "getAllCoursesFallback")
-  public Page<CourseDto> getAllCoursesByUser(final Pageable pageable, final UUID userId) {
+  public Page<CourseDto> getAllCoursesByUser(final Pageable pageable, final UUID userId,
+      final String token) {
     log.info("[method:getAllCoursesByUser] userId: {}", userId);
     final var url = utilsService.createUrl(userId, pageable);
     log.info("[method:getAllCoursesByUser] url: {} ", url);
     ParameterizedTypeReference<ResponsePageDto<CourseDto>> responseType =
         new ParameterizedTypeReference<>() {
         };
-    return restTemplate.exchange(url, HttpMethod.GET, null, responseType).getBody();
+    final var headers = new HttpHeaders();
+    headers.set("Authorization", token);
+    final var requestEntity = new HttpEntity<>("parameters", headers);
+    return restTemplate.exchange(url, HttpMethod.GET, requestEntity, responseType).getBody();
   }
 
   public Page<CourseDto> getAllCoursesFallback(final Pageable pageable,
