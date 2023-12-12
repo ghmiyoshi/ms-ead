@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,6 +44,7 @@ public class CourseController {
   private final CourseService courseService;
   private final CourseValidator courseValidator;
 
+  @PreAuthorize("hasRole('INSTRUCTOR')")
   @PostMapping
   public ResponseEntity<Object> saveCourse(@RequestBody final CourseDto courseDto,
       final Errors errors) {
@@ -53,6 +55,7 @@ public class CourseController {
     return ResponseEntity.status(HttpStatus.CREATED).body(courseService.saveCourse(course));
   }
 
+  @PreAuthorize("hasRole('INSTRUCTOR')")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @DeleteMapping("/{courseId}")
   public void deleteCourse(@PathVariable final UUID courseId) {
@@ -60,6 +63,7 @@ public class CourseController {
     courseService.deleteCourse(courseId);
   }
 
+  @PreAuthorize("hasRole('INSTRUCTOR')")
   @PutMapping("/{courseId}")
   public ResponseEntity<Course> updateCourse(@PathVariable final UUID courseId,
       @RequestBody @Valid final CourseDto courseDto) {
@@ -68,6 +72,7 @@ public class CourseController {
     return ResponseEntity.ok(courseService.saveCourse(course));
   }
 
+  @PreAuthorize("hasRole('STUDENT')")
   @GetMapping
   public ResponseEntity<Page<Course>> getAllCourses(
       @RequestParam(required = false) final CourseLevel courseLevel,

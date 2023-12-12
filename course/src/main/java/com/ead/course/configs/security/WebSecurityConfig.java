@@ -1,17 +1,13 @@
-package com.ead.authuser.configs;
+package com.ead.course.configs.security;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
-import com.ead.authuser.configs.filter.AuthenticationJwtFilter;
-import com.ead.authuser.services.impl.AuthenticationEntryPointImpl;
-import com.ead.authuser.services.impl.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -26,19 +22,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class WebSecurityConfig {
 
-  private static final String[] AUTH_WHITELIST = {"/auth/**"};
-  private UserDetailsServiceImpl userDetailsService;
   private AuthenticationEntryPointImpl authenticationEntryPoint;
   private AuthenticationJwtFilter authenticationJwtFilter;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
     return httpSecurity
-        .csrf(csrf -> csrf.disable())
         .exceptionHandling(
             exception -> exception.authenticationEntryPoint(authenticationEntryPoint))
-        .authorizeHttpRequests(authorize -> authorize.requestMatchers(AUTH_WHITELIST).permitAll()
-            .anyRequest().authenticated()
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated()
         )
         .sessionManagement(
             session -> session.sessionCreationPolicy(STATELESS))
@@ -53,14 +46,6 @@ public class WebSecurityConfig {
     var hierarchy = "ROLE_ADMIN > ROLE_INSTRUCTOR \n ROLE_INSTRUCTOR > ROLE_STUDENT \n ROLE_STUDENT > ROLE_GUEST";
     roleHierarchy.setHierarchy(hierarchy);
     return roleHierarchy;
-  }
-
-  @Bean
-  public DaoAuthenticationProvider authenticationProvider() {
-    var authProvider = new DaoAuthenticationProvider();
-    authProvider.setUserDetailsService(userDetailsService);
-    authProvider.setPasswordEncoder(passwordEncoder());
-    return authProvider;
   }
 
   @Bean

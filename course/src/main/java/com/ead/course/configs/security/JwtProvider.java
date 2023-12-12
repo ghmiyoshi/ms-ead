@@ -1,4 +1,4 @@
-package com.ead.notification.configs.security;
+package com.ead.course.configs.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 @Component
 public class JwtProvider {
-
+  
   @Value("${ead.auth.jwtSecret}")
   private String jtwSecret;
 
@@ -38,10 +38,10 @@ public class JwtProvider {
   }
 
   public String getClaimNameJwt(final String authToken, final String claimName) {
-      return JWT.require(Algorithm.HMAC256(jtwSecret))
-          .build()
-          .verify(authToken)
-          .getClaim(claimName)
-          .asString();
+    return JWT.require(Algorithm.HMAC256(jtwSecret))
+        .build()
+        .verify(authToken)
+        .getClaim(claimName)
+        .asString();
   }
 }

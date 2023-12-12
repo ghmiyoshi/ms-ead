@@ -1,6 +1,6 @@
 package com.ead.authuser.validation;
 
-import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -9,7 +9,7 @@ public class UsernameConstraintImpl implements ConstraintValidator<UsernameConst
 
   @Override
   public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {
-    return isNull(username) || username.trim().isEmpty() || username.contains(" ");
+    return !(isEmpty(username) || username.trim().isEmpty() || username.contains(" "));
   }
 
 }
