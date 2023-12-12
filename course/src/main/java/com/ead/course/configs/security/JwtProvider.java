@@ -11,12 +11,12 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 @Component
 public class JwtProvider {
-  
+
   @Value("${ead.auth.jwtSecret}")
   private String jtwSecret;
 
 
-  public String getUserNameFromJwtToken(final String token) {
+  public String getUserIdFromJwtToken(final String token) {
     log.info("[method:getUserNameFromJwtToken] Get username from token");
     return JWT.require(Algorithm.HMAC256(jtwSecret))
         .build()

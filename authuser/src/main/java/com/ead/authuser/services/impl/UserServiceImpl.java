@@ -3,6 +3,7 @@ package com.ead.authuser.services.impl;
 import static com.ead.authuser.models.enums.ActionType.CREATE;
 import static com.ead.authuser.models.enums.ActionType.DELETE;
 import static com.ead.authuser.models.enums.ActionType.UPDATE;
+import static com.ead.authuser.models.enums.RoleType.ROLE_INSTRUCTOR;
 import static com.ead.authuser.models.enums.RoleType.ROLE_STUDENT;
 
 import com.ead.authuser.dtos.UserEventDto;
@@ -85,6 +86,8 @@ public class UserServiceImpl implements UserService {
   public void subscriptionInstructor(final User user) {
     log.info("[method:subscriptionInstructor] Subscription user for instructor: {}", user);
     user.setUserType(UserType.INSTRUCTOR);
+    var role = roleService.findByRoleName(ROLE_INSTRUCTOR);
+    user.getRoles().add(role);
   }
 
   @Override

@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,7 @@ public class InstructorController {
 
   private UserService userService;
 
+  @PreAuthorize("hasRole('ADMIN')")
   @PostMapping("/subscription")
   public ResponseEntity<Object> saveSubscriptionInstructor(
       @RequestBody @Valid final InstructorDto instructorDto) {

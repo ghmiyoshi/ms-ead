@@ -3,6 +3,7 @@ package com.ead.course.configs.security;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,14 +15,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
-  private String username;
+  private UUID userId;
   private Collection<? extends GrantedAuthority> authorities;
 
-  public static UserDetailsImpl build(final String username, final String roles) {
+  public static UserDetailsImpl build(final UUID userId, final String roles) {
     List<GrantedAuthority> authorities = Arrays.stream(roles.split(","))
         .map(SimpleGrantedAuthority::new)
         .collect(Collectors.toList());
-    return new UserDetailsImpl(username, authorities);
+    return new UserDetailsImpl(userId, authorities);
   }
 
   @Override
