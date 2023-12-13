@@ -3,12 +3,22 @@ server:
 
 spring:
   application:
-    name: ead-config-server
+    name: configs-server
   cloud:
     config:
       server:
         git:
           uri: https://github.com/ghmiyoshi/configs-server-yml
           default-label: main
-          username: GITHUB_USERNAMEE
-          password: GITHUB_PASSWORD
+          username: ${GITHUB_USERNAME}
+          password: ${GITHUB_PASSWORD}
+
+ead:
+  config-server:
+    username: guestcs
+    password: guestcs
+
+eureka:
+  client:
+    service-url:
+      defaultZone: 'http://guest:guest@localhost:8761/eureka'

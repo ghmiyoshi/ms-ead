@@ -7,9 +7,8 @@ import reactor.core.publisher.Hooks;
 @SpringBootApplication
 public class Application {
 
-    public static void main(String[] args) {
-        Hooks.enableAutomaticContextPropagation();
-        SpringApplication.run(Application.class, args);
-    }
-
+  public static void main(String[] args) {
+    Hooks.enableAutomaticContextPropagation();
+    SpringApplication.run(Application.class, args);
+  }
 }

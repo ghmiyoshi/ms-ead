@@ -1,6 +1,6 @@
 package com.ead.course.async.consumers;
 
-import com.ead.course.dtos.UserEventDTO;
+import com.ead.course.dtos.UserEventDto;
 import com.ead.course.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,16 +17,16 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class UserConsumer {
 
-    private UserService userService;
+  private UserService userService;
 
-    @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = "${ead.broker.queue.userEventQueue.name}", durable = "true"),
-            exchange = @Exchange(value = "${ead.broker.exchange.userEventExchange}", type = ExchangeTypes.FANOUT,
-                    ignoreDeclarationExceptions = "true")))
-    public void listenUserEvent(@Payload UserEventDTO userEventDTO) {
-        log.info("{}::listenUserEvent - Start process message: {}", getClass().getSimpleName(), userEventDTO);
-        userEventDTO.getActionType().execute(userService, userEventDTO);
-        log.info("{}::listenUserEvent - Finish process message", getClass().getSimpleName());
-    }
-
+  @RabbitListener(bindings = @QueueBinding(
+      value = @Queue(value = "${ead.broker.queue.userEventQueue.name}", durable = "true"),
+      exchange = @Exchange(value = "${ead.broker.exchange.userEventExchange}", type = ExchangeTypes.FANOUT,
+          ignoreDeclarationExceptions = "true")))
+  public void listenUserEvent(@Payload UserEventDto userEventDto) {
+    log.info("{}::listenUserEvent - Start process message: {}", getClass().getSimpleName(),
+        userEventDto);
+    userEventDto.getActionType().execute(userService, userEventDto);
+    log.info("{}::listenUserEvent - Finish process message", getClass().getSimpleName());
+  }
 }

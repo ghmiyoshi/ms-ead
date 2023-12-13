@@ -9,3 +9,8 @@ spring:
 
 server:
   port: 8761
+
+ead:
+  service-registry:
+    username: guest
+    password: guest

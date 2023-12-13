@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RefreshScope
 public class RefreshScopeController {
 
-    @Value("${authuser.refreshscope.name}")
-    private String name;
+  @Value("${authuser.refreshscope.name}")
+  private String name;
 
-    @GetMapping("/refresh_scope")
-    public String getName() {
-        return name;
-    }
+  @GetMapping("/refresh_scope")
+  public String getName() {
+    return name;
+  }
 }
