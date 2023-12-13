@@ -45,7 +45,7 @@ public class UserController {
   private UserRepository userRepository;
   private AuthenticationCurrentUserService authenticationCurrentUserService;
 
-  @PreAuthorize("hasAnyRole('GUEST', 'ADMIN')")
+  @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
   @GetMapping
   @JsonView(UserResponseDto.Response.UserGet.class)
   public Page<UserResponseDto> getAllUsers(
@@ -58,6 +58,7 @@ public class UserController {
     return userRepository.findAll(toSpec(userFilter), pageable).map(UserResponseDto::from);
   }
 
+  @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
   @GetMapping("/{userId}")
   @JsonView(UserResponseDto.Response.UserGet.class)
   public UserResponseDto getOneUser(@PathVariable final UUID userId) {
@@ -68,6 +69,7 @@ public class UserController {
     throw new AccessDeniedException("Forbidden");
   }
 
+  @PreAuthorize("hasAnyRole('ADMIN')")
   @DeleteMapping("/{userId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteUser(@PathVariable final UUID userId) {
@@ -76,6 +78,7 @@ public class UserController {
     log.info("[method:deleteUser] userId: {}", userId);
   }
 
+  @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
   @PutMapping("/{userId}")
   @JsonView(UserResponseDto.Response.RegistrationPost.class)
   public UserResponseDto updateUser(@PathVariable final UUID userId,
@@ -89,6 +92,7 @@ public class UserController {
     return UserResponseDto.from(user);
   }
 
+  @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
   @PutMapping("/{userId}/password")
   public String updatePassword(@PathVariable final UUID userId,
       @RequestBody @Validated(UserRequestDto.Request.PasswordPut.class)
@@ -99,6 +103,7 @@ public class UserController {
     return "Password updated successfully";
   }
 
+  @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
   @PutMapping("/{userId}/image")
   public String updateImage(@PathVariable final UUID userId,
       @RequestBody @Validated(UserRequestDto.Request.ImagePut.class)
@@ -109,6 +114,7 @@ public class UserController {
     return "Image url updated successfully";
   }
 
+  @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
   @GetMapping("/specs")
   @JsonView(UserResponseDto.Response.UserGet.class)
   public List<UserResponseDto> getUserSpecs(@RequestParam(required = false) final UserType userType,

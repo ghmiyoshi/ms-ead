@@ -32,7 +32,7 @@ public class JwtProvider {
         .collect(Collectors.joining(","));
     try {
       return JWT.create()
-          .withSubject(userDetails.getUsername())
+          .withSubject(userDetails.getUserId().toString())
           .withClaim("roles", roles)
           .withIssuedAt(Instant.now())
           .withExpiresAt(expirationDate())
@@ -48,7 +48,7 @@ public class JwtProvider {
     return LocalDateTime.now().atZone(ZoneId.of(ZONE_ID)).toInstant().plusMillis(jwtExpirationMs);
   }
 
-  public String getUserNameFromJwtToken(final String token) {
+  public String getUserIdFromJwtToken(final String token) {
     log.info("[method:getUserNameFromJwtToken] Get username from token");
     return JWT.require(Algorithm.HMAC256(jtwSecret))
         .build()

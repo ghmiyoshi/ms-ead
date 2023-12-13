@@ -10,6 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -31,8 +32,8 @@ public class AuthenticationJwtFilter extends OncePerRequestFilter {
     try {
       var jwt = getJwt(request);
       if (isNotBlank(jwt) && jwtProvider.validateJwtToken(jwt)) {
-        var username = jwtProvider.getUserNameFromJwtToken(jwt);
-        var userDetails = userDetailsService.loadUserByUsername(username);
+        var userId = jwtProvider.getUserIdFromJwtToken(jwt);
+        var userDetails = userDetailsService.loadUserByUserId(UUID.fromString(userId));
         var authentication = userDetailsService.getAuthentication(userDetails);
         authentication.setDetails(userDetails);
         SecurityContextHolder.getContext().setAuthentication(authentication);
