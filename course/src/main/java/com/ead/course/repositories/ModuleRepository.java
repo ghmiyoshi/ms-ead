@@ -29,5 +29,4 @@ public interface ModuleRepository extends JpaRepository<Module, UUID>,
 
   @EntityGraph(attributePaths = "course")
   Page<Module> findAll(Specification<Module> spec, Pageable pageable);
-
 }

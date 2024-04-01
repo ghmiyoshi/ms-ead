@@ -25,7 +25,7 @@ public class LessonServiceImpl implements LessonService {
 
   @Override
   public void deleteLessons(final Set<Lesson> lessons) {
-    log.info("{}::deleteLessons - Delete lessons: {}", getClass().getSimpleName(), lessons);
+      log.info("[method:deleteLessons] Delete lessons: {}", lessons);
     if (isNotEmpty(lessons)) {
       lessonRepository.deleteAll(lessons);
     }

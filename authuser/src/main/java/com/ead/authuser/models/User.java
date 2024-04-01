@@ -12,10 +12,12 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -27,7 +29,9 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "tb_users")
+@Table(name = "tb_users", uniqueConstraints =
+@UniqueConstraint(name = "unq_cpf", columnNames = "cpf"),
+        indexes = @Index(name = "idx_cpf", columnList = "cpf"))
 public class User extends JsonAbstract {
 
   @EqualsAndHashCode.Include

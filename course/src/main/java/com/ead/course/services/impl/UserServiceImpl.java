@@ -1,6 +1,5 @@
 package com.ead.course.services.impl;
 
-import com.ead.course.enums.UserStatus;
 import com.ead.course.models.User;
 import com.ead.course.repositories.CourseRepository;
 import com.ead.course.repositories.UserRepository;
@@ -23,6 +22,10 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User save(User user) {
+    if (userRepository.existsUserByEmailOrCpf(user.getEmail(), user.getCpf())) {
+      log.error("[method:save] User is already taken");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is already taken");
+    }
     return userRepository.save(user);
   }
 
@@ -37,14 +40,10 @@ public class UserServiceImpl implements UserService {
   @Override
   public User findById(UUID userInstructor) {
     return userRepository.findById(userInstructor)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-            "User not found"));
-  }
-
-  @Override
-  public void isBlocked(User user) {
-    if (UserStatus.BLOCKED.name().equals(user.getUserStatus())) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "User is blocked");
-    }
+            .orElseThrow(() -> {
+              log.error("[method:findById] User not found");
+              throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                      "User not found");
+            });
   }
 }

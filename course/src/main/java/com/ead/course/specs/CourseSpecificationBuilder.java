@@ -61,5 +61,4 @@ public class CourseSpecificationBuilder {
       return criteriaBuilder.equal(users.get(User_.USER_ID), userId);
     };
   }
-
 }

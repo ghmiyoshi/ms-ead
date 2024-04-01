@@ -40,5 +40,4 @@ public class Lesson extends DefaultModel {
   @ManyToOne(optional = false)
   @JoinColumn(name = "module_id")
   private Module module;
-
 }

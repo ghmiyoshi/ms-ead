@@ -122,9 +122,8 @@ public class LoggingFilter implements GlobalFilter, Ordered {
     }
 
     private void appendBody(ByteBuffer byteBuffer) {
-      sb.append("""
-                                        
-          Body: %s""".formatted(StandardCharsets.UTF_8.decode(byteBuffer).toString()
+      sb.append("""                       
+          \nBody: %s""".formatted(StandardCharsets.UTF_8.decode(byteBuffer).toString()
           .replaceAll("\\s+", "")));
     }
 

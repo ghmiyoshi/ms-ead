@@ -10,25 +10,24 @@ public enum ActionType {
   CREATE {
     @Override
     public void execute(UserService userService, UserEventDto userEventDto) {
-      log.info("{}::execute - Save action message", getClass().getSimpleName());
+      log.info("[method:execute] Save action message");
       userService.save(userEventDto.convertToUser());
     }
   },
   UPDATE {
     @Override
     public void execute(UserService userService, UserEventDto userEventDto) {
-      log.info("{}::execute - Update action message", getClass().getSimpleName());
+      log.info("[method:execute] Update action message");
       userService.save(userEventDto.convertToUser());
     }
   },
   DELETE {
     @Override
     public void execute(UserService userService, UserEventDto userEventDto) {
-      log.info("{}::execute - Delete action message", getClass().getSimpleName());
+      log.info("[method:execute] Delete action message");
       userService.deleteById(userEventDto.getUserId());
     }
   };
 
   public abstract void execute(final UserService userService, final UserEventDto userEventDto);
-
 }

@@ -33,7 +33,7 @@ public class Course extends DefaultModel {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID courseId;
 
-  @Column(nullable = false, length = 150)
+    @Column(nullable = false, length = 150, unique = true)
   private String name;
 
   @Column(nullable = false, length = 250)
@@ -65,5 +65,4 @@ public class Course extends DefaultModel {
       joinColumns = @JoinColumn(name = "course_id"),
       inverseJoinColumns = @JoinColumn(name = "user_id"))
   private Set<User> users;
-
 }

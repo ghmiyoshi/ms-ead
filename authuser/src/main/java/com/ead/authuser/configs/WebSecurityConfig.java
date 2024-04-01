@@ -4,7 +4,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 import com.ead.authuser.configs.filter.AuthenticationJwtFilter;
 import com.ead.authuser.services.impl.AuthenticationEntryPointImpl;
-import com.ead.authuser.services.impl.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +25,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
 
   private static final String[] AUTH_WHITELIST = {"/auth/**"};
-  private UserDetailsServiceImpl userDetailsService;
   private AuthenticationEntryPointImpl authenticationEntryPoint;
   private AuthenticationJwtFilter authenticationJwtFilter;
 

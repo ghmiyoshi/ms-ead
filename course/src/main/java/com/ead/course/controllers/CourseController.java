@@ -44,22 +44,22 @@ public class CourseController {
   private final CourseService courseService;
   private final CourseValidator courseValidator;
 
-  @PreAuthorize("hasRole('INSTRUCTOR')")
+  @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN')")
   @PostMapping
-  public ResponseEntity<Object> saveCourse(@RequestBody final CourseDto courseDto,
+  public ResponseEntity<Object> saveCourse(@RequestBody @Valid final CourseDto courseDto,
       final Errors errors) {
-    log.info("{}::saveCourse - received: {}", getClass().getSimpleName(), courseDto);
+    log.info("[method:saveCourse] Received: {}", courseDto);
     courseValidator.validate(courseDto, errors);
     var course = new Course();
     BeanUtils.copyProperties(courseDto, course);
     return ResponseEntity.status(HttpStatus.CREATED).body(courseService.saveCourse(course));
   }
 
-  @PreAuthorize("hasRole('INSTRUCTOR')")
+  @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN')")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @DeleteMapping("/{courseId}")
   public void deleteCourse(@PathVariable final UUID courseId) {
-    log.info("{}::deleteCourse - received id: {}", getClass().getSimpleName(), courseId);
+    log.info("[method:deleteCourse] Received id: {}", courseId);
     courseService.deleteCourse(courseId);
   }
 
@@ -89,5 +89,4 @@ public class CourseController {
   public ResponseEntity<Course> getOneCourse(@PathVariable final UUID courseId) {
     return ResponseEntity.ok(courseService.findCourseById(courseId));
   }
-
 }

@@ -49,4 +49,5 @@ public interface CourseRepository extends JpaRepository<Course, UUID>,
       nativeQuery = true)
   void deleteCourseUserByUser(@Param("userId") UUID userId);
 
+  boolean existsByNameIgnoreCase(String name);
 }

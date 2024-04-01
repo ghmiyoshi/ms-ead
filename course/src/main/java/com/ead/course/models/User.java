@@ -1,5 +1,6 @@
 package com.ead.course.models;
 
+import com.ead.course.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +13,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @Getter
 @Setter
@@ -40,7 +43,7 @@ public class User {
   @Column(nullable = false)
   private String userType;
 
-  @Column(length = 20)
+    @Column(length = 20, unique = true)
   private String cpf;
 
   @Column
@@ -50,4 +53,9 @@ public class User {
   @ManyToMany(mappedBy = "users")
   private Set<Course> courses;
 
+    public void isBlocked() {
+        if (UserStatus.BLOCKED.name().equals(this.userStatus)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User is blocked");
+        }
+    }
 }

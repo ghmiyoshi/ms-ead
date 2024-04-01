@@ -12,5 +12,4 @@ public interface NotificationService {
     Page<Notification> findAllNotificationsByUser(UUID userId, Pageable pageable);
 
     Notification findByNotificationIdAndUserId(UUID notificationId, UUID userId);
-
 }

@@ -21,8 +21,8 @@ public class NotificationCommandPublisher {
   private String notificationCommandKey;
 
   public void publishNotificationCommand(final NotificationCommandDto notificationCommandDto) {
-    log.info("{}::publishNotificationCommand - Publish notification message: {}",
-        getClass().getSimpleName(), notificationCommandDto);
+      log.info("[method:publishNotificationCommand] Publish notification message: {}",
+              notificationCommandDto);
     rabbitTemplate.convertAndSend(notificationCommandExchange, notificationCommandKey,
         notificationCommandDto);
   }

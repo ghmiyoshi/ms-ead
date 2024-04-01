@@ -7,6 +7,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
@@ -25,6 +26,12 @@ public class ApiExceptionHandler {
   @ExceptionHandler(ResponseStatusException.class)
   public ProblemDetail handleResponseStatusException(final ResponseStatusException exception) {
     return buildProblemDetail(exception);
+  }
+
+  @ExceptionHandler(ListenerExecutionFailedException.class)
+  public ProblemDetail handleListenerExecutionFailedException(final ListenerExecutionFailedException exception) {
+    return buildProblemDetail(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "eita"
+    ));
   }
 
   @ExceptionHandler(ValidationException.class)
@@ -92,5 +99,4 @@ public class ApiExceptionHandler {
 
     return buildProblemDetail(new ResponseStatusException(HttpStatus.BAD_REQUEST, messageError));
   }
-
 }

@@ -83,5 +83,4 @@ public class LessonController {
       @PathVariable final UUID lessonId) {
     return ResponseEntity.ok(lessonService.findByModuleIdAndLessonId(moduleId, lessonId));
   }
-
 }

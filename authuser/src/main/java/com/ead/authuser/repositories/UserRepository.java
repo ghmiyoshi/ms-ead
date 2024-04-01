@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificationExecutor<User> {
 
-  boolean existsUserByUsernameOrEmail(String username, String email);
+  boolean existsUserByUsernameOrEmailOrCpf(String username, String email, String cpf);
 
   @EntityGraph(attributePaths = "roles")
   Optional<User> findByUsername(String username);

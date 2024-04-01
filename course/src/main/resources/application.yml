@@ -12,6 +12,15 @@ spring:
         service-id: configs-server
       username: guestcs
       password: guestcs
+  rabbitmq:
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 5000
+          multiplier: 1
+          max-interval: 300000
 #  datasource:
 #    url: jdbc:mysql://localhost:3306/ead-course?useSSL=false&serverTimezone=UTC
 #    username: root

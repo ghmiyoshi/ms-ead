@@ -45,5 +45,4 @@ public class Module extends DefaultModel {
   @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   @OneToMany(mappedBy = "module")
   private Set<Lesson> lessons;
-
 }

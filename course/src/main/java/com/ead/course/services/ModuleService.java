@@ -17,5 +17,4 @@ public interface ModuleService {
   Page<Module> findAllModulesByCourseId(Specification<Module> spec, Pageable pageable);
 
   Module findModuleById(UUID moduleId);
-
 }

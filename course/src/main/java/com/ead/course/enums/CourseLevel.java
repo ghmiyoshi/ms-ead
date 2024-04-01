@@ -5,5 +5,4 @@ public enum CourseLevel {
   BEGINNER,
   INTERMEDIARY,
   ADVANCED;
-
 }

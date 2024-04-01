@@ -27,5 +27,4 @@ public abstract class DefaultModel {
   public String toString() {
     return ObjectMapperUtils.writeObjectInJson(this);
   }
-
 }

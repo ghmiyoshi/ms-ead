@@ -12,5 +12,4 @@ public interface UtilsService {
   String subscriptionUserInCourse(final UUID userId);
 
   String deleteUserInCourse(UUID courseId);
-
 }

@@ -66,9 +66,10 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void validateUser(final UserRequestDto userRequest) {
-    if (userRepository.existsUserByUsernameOrEmail(userRequest.username(), userRequest.email())) {
+    if (userRepository.existsUserByUsernameOrEmailOrCpf(userRequest.username(),
+            userRequest.email(), userRequest.cpf())) {
       log.error("[method:validateUser] User is already taken");
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is already taken");
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "User is already taken");
     }
   }
 

@@ -7,6 +7,7 @@ import com.ead.course.services.CourseService;
 import com.ead.course.services.UserService;
 import com.ead.course.specs.UserFilter;
 import jakarta.validation.Valid;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -52,11 +53,11 @@ public class CourseUserController {
       @RequestBody @Valid final SubscriptionDto subscriptionDto) {
     var course = courseService.findCourseById(courseId);
     var user = userService.findById(subscriptionDto.userId());
-    userService.isBlocked(user);
+    user.isBlocked();
 
     courseService.existsByCourseAndUser(courseId, subscriptionDto.userId());
     courseService.saveSubscriptionUserInCourseAndSendNotification(course, user);
-    return ResponseEntity.status(HttpStatus.CREATED).body("Subscription created");
+    return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "Subscription " +
+            "created"));
   }
-
 }

@@ -44,38 +44,39 @@ public class CourseServiceImpl implements CourseService {
 
   @Override
   public Course saveCourse(final Course course) {
-    log.info("{}::saveCourse - Saving course: {}", getClass().getSimpleName(), course);
+      log.info("[method:saveCourse] Saving course: {}", course);
+      if (courseRepository.existsByNameIgnoreCase(course.getName())) {
+          throw new ResponseStatusException(HttpStatus.CONFLICT, "Course already exists");
+      }
     return courseRepository.save(course);
   }
 
   @Override
   public Course findCourseById(final UUID courseId) {
-    log.info("{}::findCourseById - Find course by id: {}", getClass().getSimpleName(), courseId);
+      log.info("[method:findCourseById] Find course by id: {}", courseId);
     return courseRepository.findByCourseId(courseId)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-            "Course not found"));
+            .orElseThrow(() -> {
+                log.error("[method:findCourseById] Course not found");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Course not found");
+            });
   }
 
   @Override
   public Page<Course> findAllCourses(final Specification<Course> spec, final Pageable pageable) {
-    log.info("{}::findAllCourses - Searching courses with spec: {}", getClass().getSimpleName(),
-        spec);
+      log.info("[method:findAllCourses] Searching courses with spec: {}", spec);
     return courseRepository.findAll(spec, pageable);
   }
 
   @Override
   public Page<User> findAllUsersByCourse(final Specification<User> spec, final Pageable pageable) {
-    log.info("{}::findAllUsersByCourse - Searching all users by course with spec: {}",
-        getClass().getSimpleName(),
-        spec);
+      log.info("[method:findAllUsersByCourse] Searching all users by course with spec: {}", spec);
     return userRepository.findAll(spec, pageable);
   }
 
   @Override
   public void existsByCourseAndUser(UUID courseId, UUID userId) {
-    log.info("{}::existsByCourseAndUser - Course id: {} and user id: {}",
-        getClass().getSimpleName(), courseId,
-        userId);
+      log.info("[method:existsByCourseAndUser] Course id: {} and user id: {}", courseId, userId);
     var existsSubscription =
         courseRepository.existsByCourseAndUser(courseId, userId).equals(1L) ? true : false;
     if (existsSubscription) {
@@ -87,10 +88,8 @@ public class CourseServiceImpl implements CourseService {
   @Override
   public void saveSubscriptionUserInCourse(UUID courseId, UUID userId) {
     courseRepository.saveCourseUser(courseId, userId);
-    log.info("{}::saveSubscriptionUserInCourse - Course id: {} and user id: {}",
-        getClass().getSimpleName(),
-        courseId,
-        userId);
+      log.info("[method:saveSubscriptionUserInCourse] Course id: {} and user id: {}", courseId,
+              userId);
   }
 
   @Transactional
@@ -98,8 +97,8 @@ public class CourseServiceImpl implements CourseService {
   public void saveSubscriptionUserInCourseAndSendNotification(final Course course,
       final User user) {
     courseRepository.saveCourseUser(course.getCourseId(), user.getUserId());
-    log.info("{}::saveSubscriptionUserInCourseAndSendNotification - Course id: {} and user id: {}",
-        getClass().getSimpleName(), course.getCourseId(), user.getUserId());
+      log.info("[method:saveSubscriptionUserInCourseAndSendNotification] Course id: {} and user " +
+              "id: {}", course.getCourseId(), user.getUserId());
     try {
       var notificationCommandDto = new NotificationCommandDto(
           "Bem-Vindo(a) ao Curso: " + course.getName(),
@@ -108,9 +107,8 @@ public class CourseServiceImpl implements CourseService {
           user.getUserId());
       notificationCommandPublisher.publishNotificationCommand(notificationCommandDto);
     } catch (Exception e) {
-      log.warn("{}::saveSubscriptionUserInCourseAndSendNotification - Error sending notification!",
-          getClass().getSimpleName());
+        log.warn("[method:saveSubscriptionUserInCourseAndSendNotification] Error sending " +
+                "notification!");
     }
   }
-
 }

@@ -25,5 +25,4 @@ public record CourseDto(
   public String toString() {
     return ObjectMapperUtils.writeObjectInJson(this);
   }
-
 }

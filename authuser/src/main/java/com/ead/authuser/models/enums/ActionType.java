@@ -5,5 +5,4 @@ public enum ActionType {
   CREATE,
   UPDATE,
   DELETE;
-
 }

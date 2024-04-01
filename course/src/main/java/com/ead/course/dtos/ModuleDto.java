@@ -8,5 +8,4 @@ public record ModuleDto(
     @NotBlank
     String description
 ) {
-
 }

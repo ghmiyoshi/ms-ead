@@ -24,5 +24,4 @@ public abstract class JsonAbstract {
   public String toString() {
     return ObjectMapperUtils.writeObjectInJson(this);
   }
-
 }

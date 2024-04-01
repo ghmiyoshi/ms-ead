@@ -11,5 +11,4 @@ public record CourseDto(UUID courseId,
                         CourseStatus courseStatus,
                         UUID userInstructor,
                         CourseLevel courseLevel) {
-
 }

@@ -4,5 +4,4 @@ public enum NotificationStatusEnum {
 
     CREATED,
     READ;
-
 }

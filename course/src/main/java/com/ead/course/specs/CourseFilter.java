@@ -16,5 +16,4 @@ public record CourseFilter(CourseLevel courseLevel, CourseStatus courseStatus, S
     return CourseFilter.builder().courseLevel(courseLevel).courseStatus(courseStatus).name(name)
         .userId(userId).build();
   }
-
 }

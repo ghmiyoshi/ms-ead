@@ -42,5 +42,4 @@ public class TraceFilter implements Filter {
     }
     chain.doFilter(req, res);
   }
-
 }

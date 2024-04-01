@@ -26,7 +26,7 @@ public class ModuleServiceImpl implements ModuleService {
 
   @Override
   public void deleteModule(final Module module) {
-    log.info("{}::deleteModule - Delete module: {}", getClass().getSimpleName(), module);
+      log.info("[method:deleteModule] Delete module: {}", module);
     if (isNotEmpty(module.getLessons())) {
       lessonService.deleteLessons(module.getLessons());
     }
@@ -35,15 +35,14 @@ public class ModuleServiceImpl implements ModuleService {
 
   @Override
   public Module saveModule(final Module module) {
-    log.info("{}::saveModule - received: {}", getClass().getSimpleName(), module);
+      log.info("[method:saveModule] Received: {}", module);
     return moduleRepository.save(module);
   }
 
   @Override
   public Module findByModuleIdAndCourseId(final UUID moduleId, final UUID courseId) {
-    log.info("{}::findByModuleIdAndCourseId - Module id: {} and course id: {}",
-        getClass().getSimpleName(),
-        moduleId, courseId);
+      log.info("[method:findByModuleIdAndCourseId] Module id: {} and course id: {}", moduleId,
+              courseId);
     return moduleRepository.findByModuleIdAndCourseId(moduleId, courseId)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
             "Module not found for this course"));

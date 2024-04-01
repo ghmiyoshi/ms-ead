@@ -6,5 +6,4 @@ import com.ead.authuser.models.enums.RoleType;
 public interface RoleService {
 
   Role findByRoleName(RoleType name);
-
 }

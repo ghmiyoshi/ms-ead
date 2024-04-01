@@ -35,5 +35,4 @@ public interface UserService {
   User updateUser(User user);
 
   User updatePasswordUser(User user);
-
 }

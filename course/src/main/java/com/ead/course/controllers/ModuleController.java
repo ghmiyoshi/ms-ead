@@ -75,7 +75,7 @@ public class ModuleController {
       @PageableDefault(page = 0, size = 10, sort = "moduleId",
           direction = Sort.Direction.ASC) final Pageable pageable) {
     final var moduleFilter = ModuleFilter.createFilter(title, courseId);
-    log.info("{}::getAllModules - All modules by course id", getClass().getSimpleName(), courseId);
+    log.info("[method:getAllModules] All modules by course id", courseId);
     return ResponseEntity.ok(
         moduleService.findAllModulesByCourseId(toSpec(moduleFilter), pageable));
   }

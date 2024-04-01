@@ -18,5 +18,4 @@ public interface LessonService {
   Lesson findByModuleIdAndLessonId(final UUID moduleId, final UUID lessonId);
 
   Page<Lesson> findAllLessonsByModuleId(final Specification<Lesson> spec, final Pageable pageable);
-
 }

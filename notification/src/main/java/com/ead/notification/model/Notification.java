@@ -38,5 +38,4 @@ public class Notification {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private NotificationStatusEnum notificationStatus;
-
 }
